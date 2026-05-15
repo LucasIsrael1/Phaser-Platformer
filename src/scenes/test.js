@@ -16,22 +16,17 @@ export class TestScene extends Phaser.Scene {
     }
 
     create() {
-        this.createTerrain();
-
-        this.player = new Player(this, 64, 256);
+        this.player = new Player(this, 0, 0);
         this.add.existing(this.player);
         this.cameras.main.startFollow(this.player);
 
-        this.physics.add.collider(this.player, this.terrainLayer);
-
-        this.berries = this.physics.add.staticGroup({classType: Berry});
-
-        this.berries.create(64, 224);
-        this.physics.add.overlap(this.player, this.berries, (player, berry) => berry.onOverlap(), null, this);
+        this.tilemap = this.add.tilemap('tilemap');
+        
+        this.createTerrain();
+        this.loadObjects();
     }
 
     createTerrain() {
-        this.tilemap = this.add.tilemap('tilemap');
         const tilesetImage = this.tilemap.addTilesetImage('Sand', 'tiles');
 
         this.terrainLayer = this.tilemap.createLayer('Terrain', tilesetImage, 0, 0);
@@ -39,6 +34,28 @@ export class TestScene extends Phaser.Scene {
 
         this.cameras.main.setBounds(0, 0, this.tilemap.widthInPixels, this.tilemap.heightInPixels);
         this.physics.world.setBounds(0, 0, this.tilemap.widthInPixels, this.tilemap.heightInPixels);
+
+        this.physics.add.collider(this.player, this.terrainLayer);
+    }
+
+    loadObjects() {
+        this.objectLayer = this.tilemap.getObjectLayer('Objects');
+        
+
+        this.berries = this.physics.add.staticGroup({classType: Berry});
+
+        this.objectLayer.objects.forEach(object => {
+            switch(object.type) {
+                case 'Berry':
+                    this.berries.create(object.x, object.y);
+                    break;
+                case 'SpawnPoint':
+                    this.player.setPosition(object.x, object.y + 12);
+                    break;
+            }
+        });
+
+        this.physics.add.overlap(this.player, this.berries, (player, berry) => berry.onOverlap(), null, this);
     }
 
     update()

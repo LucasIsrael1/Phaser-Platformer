@@ -23,8 +23,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
         this.body.setDragX(800);
         this.body.setMaxVelocity(walkMaxSpeed, veritcalMaxSpeed);
 
-        this.setSize(9, 13)
-        this.setOffset(8, 11);
+        this.setSize(9, 15)
+        this.setOffset(8, 9);
 
         this.keys = scene.input.keyboard.addKeys({
             left: Phaser.Input.Keyboard.KeyCodes.LEFT,
@@ -33,6 +33,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
             run: Phaser.Input.Keyboard.KeyCodes.X,
         });
 
+        this.setDepth(10);
         this.createAnimations();
 
         scene.events.on('update', this.update, this);
