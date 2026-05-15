@@ -7,11 +7,16 @@ const veritcalMaxSpeed = 300;
 
 const speedJumpInfluence = 0.1;
 
+const coyoteTime = 5;
+
 export class Player extends Phaser.Physics.Arcade.Sprite  {
 
     movingSpeed = 80;
     jumpSpeed = 230;
     isRunning = false;
+
+    timeInAir = 0;
+    isJumping = false;
 
     facingDirection = 1;
 
@@ -88,10 +93,17 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
         let inputDirection = this.keys.right.isDown - this.keys.left.isDown;
 
         if (this.body.blocked.down) {
+            this.isJumping = false;
+            this.timeInAir = 0;
+        }
+
+        if (this.isOnGroundCoyote()) {
             this.isRunning = this.keys.run.isDown;
 
+            this.timeInAir += 1;
             if (Phaser.Input.Keyboard.JustDown(this.keys.jump)) {
                 this.setVelocityY(-this.jumpSpeed - Math.abs(this.body.velocity.x * speedJumpInfluence));
+                this.isJumping = true;
             }
         }
 
@@ -131,5 +143,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
         }
 
         this.anims.play('walk', true);
+    }
+
+    isOnGroundCoyote() {
+        return !this.isJumping && (this.body.blocked.down || this.timeInAir <= coyoteTime);
     }
 }
