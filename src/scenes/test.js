@@ -45,12 +45,14 @@ export class TestScene extends Phaser.Scene {
         this.berries = this.physics.add.staticGroup({classType: Berry});
 
         this.objectLayer.objects.forEach(object => {
+            object.x += 8;
+            object.y -= 8;
             switch(object.type) {
                 case 'Berry':
                     this.berries.create(object.x, object.y);
                     break;
                 case 'SpawnPoint':
-                    this.player.setPosition(object.x, object.y + 12);
+                    this.player.setPosition(object.x, object.y - 4);
                     break;
             }
         });

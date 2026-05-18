@@ -7,7 +7,7 @@ const veritcalMaxSpeed = 300;
 
 const speedJumpInfluence = 0.1;
 
-const coyoteTime = 5;
+const coyoteTime = 100;
 
 export class Player extends Phaser.Physics.Arcade.Sprite  {
 
@@ -85,9 +85,17 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
             ],
             frameRate: 10,
         });
+
+        anims.create({
+            key: 'turn',
+            frames: [
+                { key: 'player', frame: 5 },
+            ],
+            frameRate: 10,
+        });
     }
 
-    update() {
+    update(time, delta) {
         if (!this.body) return;
 
         let inputDirection = this.keys.right.isDown - this.keys.left.isDown;
@@ -100,7 +108,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
         if (this.isOnGroundCoyote()) {
             this.isRunning = this.keys.run.isDown;
 
-            this.timeInAir += 1;
+            this.timeInAir += delta;
             if (Phaser.Input.Keyboard.JustDown(this.keys.jump)) {
                 this.setVelocityY(-this.jumpSpeed - Math.abs(this.body.velocity.x * speedJumpInfluence));
                 this.isJumping = true;
@@ -139,6 +147,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
 
         if (inputDirection === 0) {
             this.anims.play('idle');
+            return;
+        }
+
+        if (inputDirection != 0 && this.isRunning && Math.abs(this.body.velocity.x) > 20 && Math.sign(inputDirection) != Math.sign(this.body.velocity.x)) {
+            this.anims.play('turn');
             return;
         }
 
