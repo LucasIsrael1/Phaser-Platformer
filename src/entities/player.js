@@ -1,18 +1,21 @@
 const walkAcceleration = 200;
-const runAcceleration = 280;
+const runAcceleration = 270;
 
 const walkMaxSpeed = 80;
-const runMaxSpeed = 150;
+const runMaxSpeed = 140;
 const veritcalMaxSpeed = 300;
+const jumpSpeed = 240;
 
 const speedJumpInfluence = 0.1;
 
 const coyoteTime = 100;
 
+const jumpGravity = 50;
+const fallGravity = 150;
+
 export class Player extends Phaser.Physics.Arcade.Sprite  {
 
     movingSpeed = 80;
-    jumpSpeed = 230;
     isRunning = false;
 
     timeInAir = 0;
@@ -26,6 +29,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
         scene.physics.add.existing(this);
         this.setCollideWorldBounds(true);
         this.body.setDragX(800);
+        this.body.setGravityY(jumpGravity);
         this.body.setMaxVelocity(walkMaxSpeed, veritcalMaxSpeed);
 
         this.setSize(9, 15)
@@ -110,13 +114,19 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
 
             this.timeInAir += delta;
             if (Phaser.Input.Keyboard.JustDown(this.keys.jump)) {
-                this.setVelocityY(-this.jumpSpeed - Math.abs(this.body.velocity.x * speedJumpInfluence));
+                this.setVelocityY(-jumpSpeed - Math.abs(this.body.velocity.x * speedJumpInfluence));
                 this.isJumping = true;
             }
         }
 
         if (this.body.velocity.y < 0 && !this.keys.jump.isDown) {
             this.body.velocity.y *= 0.8;
+        }
+
+        if (this.body.velocity.y > 0) {
+            this.body.setGravityY(fallGravity);
+        } else {
+            this.body.setGravityY(jumpGravity);
         }
 
         const acceleration = this.isRunning ? runAcceleration : walkAcceleration; 

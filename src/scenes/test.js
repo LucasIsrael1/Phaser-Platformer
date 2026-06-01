@@ -12,7 +12,7 @@ export class TestScene extends Phaser.Scene {
         this.load.image('tiles', '/assets/sprites/tileset.png');
         this.load.tilemapTiledJSON('tilemap', '/assets/tilemaps/test.json');
 
-        this.load.image('berry', '/assets/sprites/berry.png');
+        this.load.spritesheet('berry', '/assets/sprites/berry.png', {frameWidth: 16, frameHeight: 16});
     }
 
     create() {
