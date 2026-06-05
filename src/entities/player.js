@@ -26,6 +26,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     heldItem = null;
     throwTimer = 0;
 
+    isDigging = false;
+
     constructor(scene, x, y) {
         super(scene, x, y, 'player');
 
@@ -103,6 +105,22 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         });
 
         anims.create({
+            key: 'player_dig',
+            frames: [
+                { key: 'player', frame: 6 },
+            ],
+            frameRate: 10,
+        });
+
+        anims.create({
+            key: 'player_dig_finish',
+            frames: [
+                { key: 'player', frame: 7 },
+            ],
+            frameRate: 10,
+        });
+
+        anims.create({
             key: 'player_carry_idle',
             frames: [
                 { key: 'player', frame: 8 },
@@ -160,9 +178,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         let inputDirection = this.keys.right.isDown - this.keys.left.isDown;
 
-        this.handleJumping(delta);
-        this.handleMoving(inputDirection);
-        if (this.heldItem) this.handleHeldItem();
+        if (this.isDigging) {
+            this.handleDigging();
+        } else {
+            this.handleJumping(delta);
+            this.handleMoving(inputDirection);
+            if (this.heldItem) this.handleHeldItem();
+        }
 
         this.updateAnimations(inputDirection, delta)
     }
@@ -205,6 +227,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.body.setGravityY(jumpGravity);
         }
     }
+
+    handleDigging() {
+        this.body.setVelocity(0, 0);
+        this.body.setAcceleration(0, 0);
+    }
     
     handleHeldItem() {
         if (Phaser.Input.Keyboard.JustDown(this.keys.item)) {
@@ -221,6 +248,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.throwTimer > 0) {
             this.throwTimer -= delta;
             this.anims.play('player_throw');
+            return;
+        }
+
+        if (this.isDigging) {
+            this.anims.play('player_dig');
             return;
         }
 

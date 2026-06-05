@@ -1,7 +1,7 @@
 import { Projectile } from "./projectile.js";
 
 export class Rock extends Projectile  {
-
+    
     heldOffset = -14;
     isThrown = false;
 

@@ -1,6 +1,7 @@
 import { Player } from "/src/entities/player.js";
 import { Berry } from "/src/items/berry.js";
 import { Rock } from "/src/items/rock.js";
+import { BurriedItem, ItemType } from "/src/objects/burried-item.js";
 
 export class TestScene extends Phaser.Scene {
     constructor() {
@@ -17,6 +18,8 @@ export class TestScene extends Phaser.Scene {
         this.load.image('rock', '/assets/sprites/rock.png');
 
         this.load.image('psychic', '/assets/sprites/psychic.png');
+
+        this.load.image('burried_item', '/assets/sprites/burried_item.png');
     }
 
     create() {
@@ -48,6 +51,9 @@ export class TestScene extends Phaser.Scene {
         this.objectLayer = this.tilemap.getObjectLayer('Objects');
 
         this.berries = this.physics.add.staticGroup({classType: Berry});
+        this.burriedItems = this.physics.add.staticGroup({classType: BurriedItem});
+
+        this.rocks = this.physics.add.group({classType: Rock, runChildUpdate: true});
 
         this.objectLayer.objects.forEach(object => {
             object.x += 8;
@@ -59,23 +65,23 @@ export class TestScene extends Phaser.Scene {
                 case 'SpawnPoint':
                     this.player.setPosition(object.x, object.y - 4);
                     break;
+                case 'BurriedItem':
+                    this.burriedItems.create(object.x, object.y + 5, object.properties[0].value);
+                    break;
             }
         });
 
         this.physics.add.overlap(this.player, this.berries, (player, berry) => berry.onOverlap(), null, this);
-
-        this.rocks = this.physics.add.group({
-            classType: Rock,
-            runChildUpdate: true
-        });
-
-        this.testRock = new Rock(this, this.player.x, this.player.y - 14);
-
-        this.rocks.add(this.testRock);
-        this.player.heldItem = this.testRock;
-        this.testRock.pickUp(this.player);
+        this.physics.add.overlap(this.player, this.burriedItems, (player, item) => item.onOverlap(player, item), null, this);
 
         this.physics.add.overlap(this.rocks, this.berries, (rock, berry) => berry.onOverlap(), null, this);        
+    
+        // this.testRock = new Rock(this, this.player.x, this.player.y - 14);
+
+        // this.rocks.add(this.testRock);
+        // this.player.heldItem = this.testRock;
+        // this.testRock.pickUp(this.player);
+
     }
 
     update()
