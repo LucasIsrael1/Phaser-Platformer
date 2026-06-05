@@ -1,3 +1,4 @@
+import { BurriedBerry } from "../items/burried_berry.js";
 import { Rock } from "/src/items/rock.js";
 
 export const ItemType = {
@@ -44,8 +45,7 @@ export class BurriedItem extends Phaser.Physics.Arcade.Sprite {
     }
 
     spawnBerry(player) {
-        console.log('Berry spawned');
-        return;
+        new BurriedBerry(this.scene, this.x, this.y);
     }
 
     spawnRock(player) {
