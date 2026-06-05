@@ -20,6 +20,8 @@ export class TestScene extends Phaser.Scene {
     }
 
     create() {
+        this.cameras.main.setBackgroundColor("#96aaff");
+
         this.player = new Player(this, 0, 0);
         this.add.existing(this.player);
         this.cameras.main.startFollow(this.player);
@@ -28,8 +30,6 @@ export class TestScene extends Phaser.Scene {
         
         this.createTerrain();
         this.loadObjects();
-
-        
     }
 
     createTerrain() {
@@ -66,13 +66,14 @@ export class TestScene extends Phaser.Scene {
 
         this.rocks = this.physics.add.group({
             classType: Rock,
-            runChildUpdate: false
+            runChildUpdate: true
         });
 
-        this.rock = new Rock(this, this.player.x, this.player.y - 14);
+        this.testRock = new Rock(this, this.player.x, this.player.y - 14);
 
-        this.rocks.add(this.rock);
-        this.player.heldItem = this.rock;
+        this.rocks.add(this.testRock);
+        this.player.heldItem = this.testRock;
+        this.testRock.pickUp(this.player);
 
         this.physics.add.overlap(this.rocks, this.berries, (rock, berry) => berry.onOverlap(), null, this);        
     }

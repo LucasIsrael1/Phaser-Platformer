@@ -24,6 +24,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     facingDirection = 1;
 
     heldItem = null;
+    throwTimer = 0;
 
     constructor(scene, x, y) {
         super(scene, x, y, 'player');
@@ -144,6 +145,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             ],
             frameRate: 10,
         });
+
+        anims.create({
+            key: 'player_throw',
+            frames: [
+                { key: 'player', frame: 14 },
+            ],
+            frameRate: 10,
+        });
     }
 
     update(time, delta) {
@@ -151,6 +160,26 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         let inputDirection = this.keys.right.isDown - this.keys.left.isDown;
 
+        this.handleJumping(delta);
+        this.handleMoving(inputDirection);
+        if (this.heldItem) this.handleHeldItem();
+
+        this.updateAnimations(inputDirection, delta)
+    }
+
+    handleMoving(inputDirection) {
+        const acceleration = this.isRunning ? runAcceleration : walkAcceleration; 
+        const maxSpeed = this.isRunning ? runMaxSpeed : walkMaxSpeed;
+
+        this.setAccelerationX(inputDirection * acceleration);
+        this.body.setMaxVelocity(maxSpeed, veritcalMaxSpeed);
+
+        if (inputDirection !== 0) {
+            this.facingDirection = inputDirection;
+        }
+    }
+
+    handleJumping(delta) {
         if (this.body.blocked.down) {
             this.isJumping = false;
             this.timeInAir = 0;
@@ -175,31 +204,25 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         } else {
             this.body.setGravityY(jumpGravity);
         }
-
-        const acceleration = this.isRunning ? runAcceleration : walkAcceleration; 
-        const maxSpeed = this.isRunning ? runMaxSpeed : walkMaxSpeed;
-
-        this.setAccelerationX(inputDirection * acceleration);
-        this.body.setMaxVelocity(maxSpeed, veritcalMaxSpeed);
-
-        if (inputDirection !== 0) {
-            this.facingDirection = inputDirection;
+    }
+    
+    handleHeldItem() {
+        if (Phaser.Input.Keyboard.JustDown(this.keys.item)) {
+            this.heldItem.throwItem();
+            this.heldItem = null;
+            this.throwTimer = 200;
         }
-
-        if (this.heldItem) {
-            this.updateHeldItem(time);
-            if (Phaser.Input.Keyboard.JustDown(this.keys.item)) {
-                this.heldItem.throwItem(this.facingDirection, this.body.velocity.x, this.body.velocity.y);
-                this.heldItem = null;
-            }
-        }
-
-        this.updateAnimations(inputDirection)
     }
 
-    updateAnimations(inputDirection) {
+    updateAnimations(inputDirection, delta) {
         this.setFlipX(this.facingDirection < 0);
         this.anims.timeScale = 1;
+
+        if (this.throwTimer > 0) {
+            this.throwTimer -= delta;
+            this.anims.play('player_throw');
+            return;
+        }
 
         let prefix = 'player';
 
@@ -227,10 +250,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.anims.timeScale = 0.2 + Math.abs(this.body.velocity.x) * 0.02;
         this.anims.play(prefix + '_walk', true);
-    }
-
-    updateHeldItem(time) {
-        this.heldItem.updateHeldPosition(this.x, this.y, time);
     }
 
     isOnGroundCoyote() {
