@@ -1,5 +1,6 @@
 import { Player } from "/src/entities/player.js";
-import { Berry } from "/src/entities/berry.js";
+import { Berry } from "/src/items/berry.js";
+import { Rock } from "/src/items/rock.js";
 
 export class TestScene extends Phaser.Scene {
     constructor() {
@@ -13,6 +14,9 @@ export class TestScene extends Phaser.Scene {
         this.load.tilemapTiledJSON('tilemap', '/assets/tilemaps/test.json');
 
         this.load.spritesheet('berry', '/assets/sprites/berry.png', {frameWidth: 16, frameHeight: 16});
+        this.load.image('rock', '/assets/sprites/rock.png');
+
+        this.load.image('psychic', '/assets/sprites/psychic.png');
     }
 
     create() {
@@ -24,6 +28,8 @@ export class TestScene extends Phaser.Scene {
         
         this.createTerrain();
         this.loadObjects();
+
+        
     }
 
     createTerrain() {
@@ -40,7 +46,6 @@ export class TestScene extends Phaser.Scene {
 
     loadObjects() {
         this.objectLayer = this.tilemap.getObjectLayer('Objects');
-        
 
         this.berries = this.physics.add.staticGroup({classType: Berry});
 
@@ -58,10 +63,22 @@ export class TestScene extends Phaser.Scene {
         });
 
         this.physics.add.overlap(this.player, this.berries, (player, berry) => berry.onOverlap(), null, this);
+
+        this.rocks = this.physics.add.group({
+            classType: Rock,
+            runChildUpdate: false
+        });
+
+        this.rock = new Rock(this, this.player.x, this.player.y - 14);
+
+        this.rocks.add(this.rock);
+        this.player.heldItem = this.rock;
+
+        this.physics.add.overlap(this.rocks, this.berries, (rock, berry) => berry.onOverlap(), null, this);        
     }
 
     update()
     {
-
+        
     }
 }

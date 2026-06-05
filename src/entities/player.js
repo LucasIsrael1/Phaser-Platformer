@@ -1,7 +1,7 @@
-const walkAcceleration = 200;
-const runAcceleration = 270;
+const walkAcceleration = 190;
+const runAcceleration = 280;
 
-const walkMaxSpeed = 80;
+const walkMaxSpeed = 70;
 const runMaxSpeed = 140;
 const veritcalMaxSpeed = 300;
 const jumpSpeed = 240;
@@ -13,7 +13,7 @@ const coyoteTime = 100;
 const jumpGravity = 50;
 const fallGravity = 150;
 
-export class Player extends Phaser.Physics.Arcade.Sprite  {
+export class Player extends Phaser.Physics.Arcade.Sprite {
 
     movingSpeed = 80;
     isRunning = false;
@@ -22,6 +22,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
     isJumping = false;
 
     facingDirection = 1;
+
+    heldItem = null;
 
     constructor(scene, x, y) {
         super(scene, x, y, 'player');
@@ -40,6 +42,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
             right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
             jump: Phaser.Input.Keyboard.KeyCodes.Z,
             run: Phaser.Input.Keyboard.KeyCodes.X,
+            item: Phaser.Input.Keyboard.KeyCodes.A,
         });
 
         this.setDepth(10);
@@ -55,7 +58,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
         const anims = this.scene.anims;
 
         anims.create({
-            key: 'idle',
+            key: 'player_idle',
             frames: [
                 { key: 'player', frame: 0 },
             ],
@@ -63,19 +66,19 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
         });
 
         anims.create({
-            key: 'walk',
+            key: 'player_walk',
             frames: [
                 { key: 'player', frame: 0 },
                 { key: 'player', frame: 1 },
                 { key: 'player', frame: 0 },
                 { key: 'player', frame: 2 },
             ],
-            frameRate: 10,
+            frameRate: 5,
             repeat: -1
         });
 
         anims.create({
-            key: 'jump',
+            key: 'player_jump',
             frames: [
                 { key: 'player', frame: 3 },
             ],
@@ -83,7 +86,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
         });
 
         anims.create({
-            key: 'fall',
+            key: 'player_fall',
             frames: [
                 { key: 'player', frame: 4 },
             ],
@@ -91,9 +94,53 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
         });
 
         anims.create({
-            key: 'turn',
+            key: 'player_turn',
             frames: [
                 { key: 'player', frame: 5 },
+            ],
+            frameRate: 10,
+        });
+
+        anims.create({
+            key: 'player_carry_idle',
+            frames: [
+                { key: 'player', frame: 8 },
+            ],
+            frameRate: 10,
+        });
+
+        anims.create({
+            key: 'player_carry_walk',
+            frames: [
+                { key: 'player', frame: 8 },
+                { key: 'player', frame: 9 },
+                { key: 'player', frame: 8 },
+                { key: 'player', frame: 10 },
+            ],
+            frameRate: 5,
+            repeat: -1
+        });
+
+        anims.create({
+            key: 'player_carry_jump',
+            frames: [
+                { key: 'player', frame: 11 },
+            ],
+            frameRate: 10,
+        });
+
+        anims.create({
+            key: 'player_carry_fall',
+            frames: [
+                { key: 'player', frame: 12 },
+            ],
+            frameRate: 10,
+        });
+
+        anims.create({
+            key: 'player_carry_turn',
+            frames: [
+                { key: 'player', frame: 13 },
             ],
             frameRate: 10,
         });
@@ -139,33 +186,51 @@ export class Player extends Phaser.Physics.Arcade.Sprite  {
             this.facingDirection = inputDirection;
         }
 
+        if (this.heldItem) {
+            this.updateHeldItem(time);
+            if (Phaser.Input.Keyboard.JustDown(this.keys.item)) {
+                this.heldItem.throwItem(this.facingDirection, this.body.velocity.x, this.body.velocity.y);
+                this.heldItem = null;
+            }
+        }
+
         this.updateAnimations(inputDirection)
     }
 
     updateAnimations(inputDirection) {
         this.setFlipX(this.facingDirection < 0);
+        this.anims.timeScale = 1;
+
+        let prefix = 'player';
+
+        if (this.heldItem) prefix += '_carry'
 
         if (!this.body.blocked.down) {
             if (this.body.velocity.y < 0) {
-                this.anims.play('jump');
+                this.anims.play(prefix + '_jump');
                 return;
             }
 
-            this.anims.play('fall');
+            this.anims.play(prefix + '_fall');
             return;
         }
 
         if (inputDirection === 0) {
-            this.anims.play('idle');
+            this.anims.play(prefix + '_idle');
             return;
         }
 
         if (inputDirection != 0 && this.isRunning && Math.abs(this.body.velocity.x) > 20 && Math.sign(inputDirection) != Math.sign(this.body.velocity.x)) {
-            this.anims.play('turn');
+            this.anims.play(prefix + '_turn');
             return;
         }
 
-        this.anims.play('walk', true);
+        this.anims.timeScale = 0.2 + Math.abs(this.body.velocity.x) * 0.02;
+        this.anims.play(prefix + '_walk', true);
+    }
+
+    updateHeldItem(time) {
+        this.heldItem.updateHeldPosition(this.x, this.y, time);
     }
 
     isOnGroundCoyote() {
