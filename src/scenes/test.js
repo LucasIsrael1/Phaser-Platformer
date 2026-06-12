@@ -98,9 +98,12 @@ export class TestScene extends Phaser.Scene {
         this.events.emit('updateLives', this.player.lives);
 
         if (this.player.lives <= 0) {
-            // Por agora reinicia a cena ao morrer sem vidas
-            this.scene.restart();
-            return;
+            this.scene.stop('HUDScene');
+            const hudScene = this.scene.get('HUDScene');
+            const score = hudScene ? hudScene.berryCount : 0;
+            this.scene.launch('GameOverScene', { score: score });
+            this.scene.stop();
+        return;
         }
 
         // Respawn no ponto inicial sem perder berries

@@ -1,11 +1,12 @@
 import { TestScene } from '/src/scenes/test.js';
 import { HUDScene } from "/src/scenes/HUDScene.js";
+import { GameOverScene } from "/src/scenes/GameOverScene.js";
 
 const config = {
     type: Phaser.AUTO,
     width: 320,
     height: 180,
-    scene: [TestScene, HUDScene],
+    scene: [TestScene, HUDScene, GameOverScene],
     backgroundColor: '#88838b',
     physics: {
         default: 'arcade',
