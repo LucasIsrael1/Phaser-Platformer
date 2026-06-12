@@ -20,6 +20,7 @@ export class TestScene extends Phaser.Scene {
         this.load.image('psychic', '/assets/sprites/psychic.png');
 
         this.load.image('burried_item', '/assets/sprites/burried_item.png');
+        this.load.image('heart', '/assets/sprites/heart.png');
     }
 
     create() {
@@ -33,6 +34,7 @@ export class TestScene extends Phaser.Scene {
         
         this.createTerrain();
         this.loadObjects();
+        this.createHUD();
     }
 
     createTerrain() {
@@ -84,8 +86,78 @@ export class TestScene extends Phaser.Scene {
 
     }
 
-    update()
-    {
-        
+    createHUD() {
+        // Fundo semi-transparente
+        this.hudBg = this.add.rectangle(0, 0, 80, 18, 0x000000, 0.35)
+            .setOrigin(0, 0)
+            .setScrollFactor(0)
+            .setDepth(99);
+
+        // Ícone da berry
+        this.hudBerryIcon = this.add.sprite(10, 9, 'berry')
+            .setOrigin(0.5, 0.5)
+            .setScrollFactor(0)
+            .setDepth(100);
+        this.hudBerryIcon.anims.play('berry');
+
+        // Texto do contador de berries
+        this.hudBerryText = this.add.text(20, 9, 'x0', {
+            fontSize: '24px',
+            fill: '#ffffff',
+            fontFamily: 'monospace',
+            stroke: '#000000',
+            strokeThickness: 6
+        }).setOrigin(0, 0.5).setScrollFactor(0).setDepth(100).setScale(0.333);
+
+        // Ícone do coração
+        this.hudHeartIcon = this.add.image(45, 9, 'heart')
+            .setOrigin(0.5, 0.5)
+            .setScrollFactor(0)
+            .setDepth(100);
+
+        // Texto do contador de vidas
+        this.hudLivesText = this.add.text(55, 9, 'x3', {
+            fontSize: '24px',
+            fill: '#ffffff',
+            fontFamily: 'monospace',
+            stroke: '#000000',
+            strokeThickness: 6
+        }).setOrigin(0, 0.5).setScrollFactor(0).setDepth(100).setScale(0.333);
+
+        // Contadores internos
+        this.berryCount = 0;
+        this.livesCount = this.player.lives;
+
+        // Ouvir evento de berry apanhada
+        this.events.on('berryCollected', () => {
+            this.berryCount++;
+            this.hudBerryText.setText('x' + this.berryCount);
+        });
+    }
+
+    update() {
+        if (this.player.y > this.tilemap.heightInPixels + 20) {
+            this.playerDie();
+        }
+    }
+
+    playerDie() {
+        this.player.lives--;
+        this.livesCount = this.player.lives;
+        this.hudLivesText.setText('x' + this.livesCount);
+
+        if (this.player.lives <= 0) {
+            // Por agora reinicia a cena ao morrer sem vidas
+            this.scene.restart();
+            return;
+        }
+
+        // Respawn no ponto inicial sem perder berries
+        this.objectLayer.objects.forEach(object => {
+            if (object.type === 'SpawnPoint') {
+                this.player.setPosition(object.x + 8, object.y - 12);
+                this.player.setVelocity(0, 0);
+            }
+        });
     }
 }

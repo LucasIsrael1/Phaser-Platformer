@@ -46,6 +46,7 @@ export class BurriedItem extends Phaser.Physics.Arcade.Sprite {
 
     spawnBerry(player) {
         new BurriedBerry(this.scene, this.x, this.y);
+        this.scene.events.emit('berryCollected');
     }
 
     spawnRock(player) {

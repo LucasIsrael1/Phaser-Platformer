@@ -15,6 +15,8 @@ const fallGravity = 150;
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
 
+    lives = 3;
+    
     movingSpeed = 80;
     isRunning = false;
 
@@ -32,7 +34,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, 'player');
 
         scene.physics.add.existing(this);
-        this.setCollideWorldBounds(true);
+        this.setCollideWorldBounds(false);
         this.body.setDragX(800);
         this.body.setGravityY(jumpGravity);
         this.body.setMaxVelocity(walkMaxSpeed, veritcalMaxSpeed);
