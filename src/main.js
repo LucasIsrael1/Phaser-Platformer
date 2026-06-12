@@ -1,10 +1,11 @@
 import { TestScene } from '/src/scenes/test.js';
+import { HUDScene } from "/src/scenes/HUDScene.js";
 
 const config = {
     type: Phaser.AUTO,
     width: 320,
     height: 180,
-    scene: TestScene,
+    scene: [TestScene, HUDScene],
     backgroundColor: '#88838b',
     physics: {
         default: 'arcade',
@@ -22,4 +23,5 @@ const config = {
     },
 };
 
+console.log('Cenas registadas:', config.scene);
 const game = new Phaser.Game(config);
