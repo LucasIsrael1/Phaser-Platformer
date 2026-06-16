@@ -1,7 +1,7 @@
 import { Player } from "/src/entities/player.js";
 import { Berry } from "/src/items/berry.js";
 import { Rock } from "/src/items/rock.js";
-import { BurriedItem, ItemType } from "/src/objects/burried-item.js";
+import { BurriedItem, ItemType } from "/src/objects/burried_item.js";
 
 export class TestScene extends Phaser.Scene {
     constructor() {
@@ -21,6 +21,11 @@ export class TestScene extends Phaser.Scene {
 
         this.load.image('burried_item', '/assets/sprites/burried_item.png');
         this.load.image('heart', '/assets/sprites/heart.png');
+
+        this.load.spritesheet('crab', '/assets/sprites/crab.png', {frameWidth: 24, frameHeight: 24});
+
+        this.load.spritesheet('shelled_crab', '/assets/sprites/shelled_crab.png', {frameWidth: 24, frameHeight: 24});
+        this.load.image('crab_shell', '/assets/sprites/crab_shell.png');
     }
 
     create() {

@@ -1,3 +1,5 @@
+import { States } from "/src/entities/states/player_states.js";
+
 const walkAcceleration = 190;
 const runAcceleration = 280;
 
@@ -28,13 +30,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     heldItem = null;
     throwTimer = 0;
 
-    isDigging = false;
+    stateName = '';
+    currentState = null;
 
     constructor(scene, x, y) {
         super(scene, x, y, 'player');
 
         scene.physics.add.existing(this);
-        this.setCollideWorldBounds(false);
+
         this.body.setDragX(800);
         this.body.setGravityY(jumpGravity);
         this.body.setMaxVelocity(walkMaxSpeed, veritcalMaxSpeed);
@@ -53,10 +56,116 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.setDepth(10);
         this.createAnimations();
 
+        this.setState('play');
+
         scene.events.on('update', this.update, this);
         this.on('destroy', () => {
             scene.events.off('update', this.update, this);
         });
+    }
+
+    update(time, delta) {
+        if (!this.body) return;
+
+        let inputDirection = this.keys.right.isDown - this.keys.left.isDown;
+
+        if (this.currentState?.update) this.currentState.update(this, time, delta, inputDirection);
+    }
+
+    setState(name) {
+        if (name == this.stateName) return;
+        if (this.currentState?.exit) this.currentState.exit(this);
+        this.currentState = States[name];
+        if (this.currentState?.enter) this.currentState.enter(this);
+    }
+
+    handleMoving(inputDirection) {
+        const acceleration = this.isRunning ? runAcceleration : walkAcceleration; 
+        const maxSpeed = this.isRunning ? runMaxSpeed : walkMaxSpeed;
+
+        this.setAccelerationX(inputDirection * acceleration);
+        this.body.setMaxVelocity(maxSpeed, veritcalMaxSpeed);
+
+        if (inputDirection !== 0) {
+            this.facingDirection = inputDirection;
+        }
+    }
+
+    handleJumping(delta) {
+        if (this.body.blocked.down) {
+            this.isJumping = false;
+            this.timeInAir = 0;
+        }
+
+        if (this.isOnGroundCoyote()) {
+            this.isRunning = this.keys.run.isDown;
+
+            this.timeInAir += delta;
+            if (Phaser.Input.Keyboard.JustDown(this.keys.jump)) {
+                this.setVelocityY(-jumpSpeed - Math.abs(this.body.velocity.x * speedJumpInfluence));
+                this.isJumping = true;
+            }
+        }
+
+        if (this.body.velocity.y < 0 && !this.keys.jump.isDown) {
+            this.body.velocity.y *= 0.8;
+        }
+
+        if (this.body.velocity.y > 0) {
+            this.body.setGravityY(fallGravity);
+        } else {
+            this.body.setGravityY(jumpGravity);
+        }
+    }
+
+    handleHeldItem() {
+        if (Phaser.Input.Keyboard.JustDown(this.keys.item)) {
+            this.heldItem.throwItem();
+            this.heldItem = null;
+            this.throwTimer = 200;
+        }
+    }
+
+    updateAnimations(inputDirection, delta) {
+        this.setFlipX(this.facingDirection < 0);
+        this.anims.timeScale = 1;
+
+        if (this.throwTimer > 0) {
+            this.throwTimer -= delta;
+            this.anims.play('player_throw');
+            return;
+        }
+
+        let prefix = 'player';
+
+        if (this.heldItem) prefix += '_carry'
+
+        if (!this.body.blocked.down) {
+            if (this.body.velocity.y < 0) {
+                this.anims.play(prefix + '_jump');
+                return;
+            }
+
+            this.anims.play(prefix + '_fall');
+            return;
+        }
+
+        if (inputDirection === 0) {
+            this.anims.play(prefix + '_idle');
+            return;
+        }
+
+        if (inputDirection != 0 && this.isRunning && Math.abs(this.body.velocity.x) > 20 && Math.sign(inputDirection) != Math.sign(this.body.velocity.x)) {
+            this.anims.play(prefix + '_turn');
+            return;
+        }
+
+        this.anims.timeScale = 0.2 + Math.abs(this.body.velocity.x) * 0.02;
+        this.anims.play(prefix + '_walk', true);
+    }
+
+    isOnGroundCoyote() {
+        return !this.isJumping && (this.body.blocked.down || this.timeInAir <= coyoteTime);
     }
 
     createAnimations() {
@@ -173,120 +282,5 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             ],
             frameRate: 10,
         });
-    }
-
-    update(time, delta) {
-        if (!this.body) return;
-
-        let inputDirection = this.keys.right.isDown - this.keys.left.isDown;
-
-        if (this.isDigging) {
-            this.handleDigging();
-        } else {
-            this.handleJumping(delta);
-            this.handleMoving(inputDirection);
-            if (this.heldItem) this.handleHeldItem();
-        }
-
-        this.updateAnimations(inputDirection, delta)
-    }
-
-    handleMoving(inputDirection) {
-        const acceleration = this.isRunning ? runAcceleration : walkAcceleration; 
-        const maxSpeed = this.isRunning ? runMaxSpeed : walkMaxSpeed;
-
-        this.setAccelerationX(inputDirection * acceleration);
-        this.body.setMaxVelocity(maxSpeed, veritcalMaxSpeed);
-
-        if (inputDirection !== 0) {
-            this.facingDirection = inputDirection;
-        }
-    }
-
-    handleJumping(delta) {
-        if (this.body.blocked.down) {
-            this.isJumping = false;
-            this.timeInAir = 0;
-        }
-
-        if (this.isOnGroundCoyote()) {
-            this.isRunning = this.keys.run.isDown;
-
-            this.timeInAir += delta;
-            if (Phaser.Input.Keyboard.JustDown(this.keys.jump)) {
-                this.setVelocityY(-jumpSpeed - Math.abs(this.body.velocity.x * speedJumpInfluence));
-                this.isJumping = true;
-            }
-        }
-
-        if (this.body.velocity.y < 0 && !this.keys.jump.isDown) {
-            this.body.velocity.y *= 0.8;
-        }
-
-        if (this.body.velocity.y > 0) {
-            this.body.setGravityY(fallGravity);
-        } else {
-            this.body.setGravityY(jumpGravity);
-        }
-    }
-
-    handleDigging() {
-        this.body.setVelocity(0, 0);
-        this.body.setAcceleration(0, 0);
-    }
-    
-    handleHeldItem() {
-        if (Phaser.Input.Keyboard.JustDown(this.keys.item)) {
-            this.heldItem.throwItem();
-            this.heldItem = null;
-            this.throwTimer = 200;
-        }
-    }
-
-    updateAnimations(inputDirection, delta) {
-        this.setFlipX(this.facingDirection < 0);
-        this.anims.timeScale = 1;
-
-        if (this.throwTimer > 0) {
-            this.throwTimer -= delta;
-            this.anims.play('player_throw');
-            return;
-        }
-
-        if (this.isDigging) {
-            this.anims.play('player_dig');
-            return;
-        }
-
-        let prefix = 'player';
-
-        if (this.heldItem) prefix += '_carry'
-
-        if (!this.body.blocked.down) {
-            if (this.body.velocity.y < 0) {
-                this.anims.play(prefix + '_jump');
-                return;
-            }
-
-            this.anims.play(prefix + '_fall');
-            return;
-        }
-
-        if (inputDirection === 0) {
-            this.anims.play(prefix + '_idle');
-            return;
-        }
-
-        if (inputDirection != 0 && this.isRunning && Math.abs(this.body.velocity.x) > 20 && Math.sign(inputDirection) != Math.sign(this.body.velocity.x)) {
-            this.anims.play(prefix + '_turn');
-            return;
-        }
-
-        this.anims.timeScale = 0.2 + Math.abs(this.body.velocity.x) * 0.02;
-        this.anims.play(prefix + '_walk', true);
-    }
-
-    isOnGroundCoyote() {
-        return !this.isJumping && (this.body.blocked.down || this.timeInAir <= coyoteTime);
     }
 }

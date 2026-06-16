@@ -9,8 +9,7 @@ export class HUDScene extends Phaser.Scene {
 
         // Ícone da berry
         const berryIcon = this.add.sprite(14, 13, 'berry').setOrigin(0.5, 0.5);
-        berryIcon.anims.play('berry');
-
+        
         // Texto do contador de berries
         this.berryText = this.add.text(24, 13, 'x0', {
             fontSize: '12px',

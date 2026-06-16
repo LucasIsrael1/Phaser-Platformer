@@ -18,14 +18,14 @@ export class BurriedItem extends Phaser.Physics.Arcade.Sprite {
     }
 
     onOverlap(player, item) {
-        if (player.heldItem || player.isDigging) return;
+        if (player.heldItem || player.isDigging || !player.body.blocked.down) return;
         if (Phaser.Input.Keyboard.JustDown(player.keys.item)) {
             this.digUp(player);
         }
     }
 
     digUp(player) {
-        player.isDigging = true;
+        player.setState('dig');
         player.facingDirection = Math.sign(this.x - player.x);
         this.scene.time.delayedCall(200, () => {this.finishDigging(player)});
     }
@@ -40,13 +40,12 @@ export class BurriedItem extends Phaser.Physics.Arcade.Sprite {
                 break;
         }
 
-        player.isDigging = false;
+        player.setState('play');
         this.destroy();
     }
 
     spawnBerry(player) {
         new BurriedBerry(this.scene, this.x, this.y);
-        this.scene.events.emit('berryCollected');
     }
 
     spawnRock(player) {
