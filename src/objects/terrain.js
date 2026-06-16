@@ -30,7 +30,7 @@ export class Terrain {
     addCollider(object) {
         this.scene.physics.add.collider(object, this.layer, null, (object, tile) => {
             if (tile.properties.Collision == CollisionType.ONE_WAY) {
-                return object.body.velocity.y > 0 && object.body.bottom <= tile.getTop() + 2;
+                return object.body.velocity.y > 0 && object.body.bottom <= tile.getTop() + 6;
             }
             return true;
         });

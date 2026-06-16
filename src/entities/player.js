@@ -1,5 +1,3 @@
-import { States } from "./states/player_states.js";
-
 const walkAcceleration = 190;
 const runAcceleration = 280;
 
@@ -17,7 +15,7 @@ const fallGravity = 150;
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
 
-    lives = 3;
+    hp = 3;
     
     movingSpeed = 80;
     isRunning = false;
@@ -32,6 +30,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     stateName = '';
     currentState = null;
+
+    damageTimer = 0;
+    invincibilityFrames = 0;
+
+    isDefeated = false;
 
     constructor(scene, x, y) {
         super(scene, x, y, 'player');
@@ -54,7 +57,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         });
 
         this.setDepth(10);
-        this.createAnimations();
 
         this.setState('play');
 
@@ -75,7 +77,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     setState(name) {
         if (name == this.stateName) return;
         if (this.currentState?.exit) this.currentState.exit(this);
-        this.currentState = States[name];
+        this.currentState = states[name];
         if (this.currentState?.enter) this.currentState.enter(this);
     }
 
@@ -126,12 +128,37 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    handleInvincibility(delta) {
+        if (this.invincibilityFrames <= 0) {
+            this.visible = true;
+            return;
+        }
+        
+        this.invincibilityFrames -= delta;
+        this.visible = this.invincibilityFrames % 100 >= 50;
+    }
+
+    checkOutOfBounds() {
+        if (this.y > this.scene.terrain.height + 20) {
+            this.setState('defeat');
+        }
+    }
+
     isOnGroundCoyote() {
         return !this.isJumping && (this.body.blocked.down || this.timeInAir <= coyoteTime);
     }
 
     damage(amount) {
-        
+        if (this.invincibilityFrames > 0) return;
+
+        this.hp -= amount;
+        if (this.hp <= 0) {
+            this.hp = 0;
+            this.setState('defeat');
+            return;
+        }
+        this.setState('damage');
+        this.invincibilityFrames = 2000;
     }
 
     updateAnimations(inputDirection, delta) {
@@ -171,120 +198,61 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.anims.timeScale = 0.2 + Math.abs(this.body.velocity.x) * 0.02;
         this.anims.play(prefix + '_walk', true);
     }
+}
 
-    createAnimations() {
-        const anims = this.scene.anims;
-
-        anims.create({
-            key: 'player_idle',
-            frames: [
-                { key: 'player', frame: 0 },
-            ],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'player_walk',
-            frames: [
-                { key: 'player', frame: 0 },
-                { key: 'player', frame: 1 },
-                { key: 'player', frame: 0 },
-                { key: 'player', frame: 2 },
-            ],
-            frameRate: 5,
-            repeat: -1
-        });
-
-        anims.create({
-            key: 'player_jump',
-            frames: [
-                { key: 'player', frame: 3 },
-            ],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'player_fall',
-            frames: [
-                { key: 'player', frame: 4 },
-            ],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'player_turn',
-            frames: [
-                { key: 'player', frame: 5 },
-            ],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'player_dig',
-            frames: [
-                { key: 'player', frame: 6 },
-            ],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'player_dig_finish',
-            frames: [
-                { key: 'player', frame: 7 },
-            ],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'player_carry_idle',
-            frames: [
-                { key: 'player', frame: 8 },
-            ],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'player_carry_walk',
-            frames: [
-                { key: 'player', frame: 8 },
-                { key: 'player', frame: 9 },
-                { key: 'player', frame: 8 },
-                { key: 'player', frame: 10 },
-            ],
-            frameRate: 5,
-            repeat: -1
-        });
-
-        anims.create({
-            key: 'player_carry_jump',
-            frames: [
-                { key: 'player', frame: 11 },
-            ],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'player_carry_fall',
-            frames: [
-                { key: 'player', frame: 12 },
-            ],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'player_carry_turn',
-            frames: [
-                { key: 'player', frame: 13 },
-            ],
-            frameRate: 10,
-        });
-
-        anims.create({
-            key: 'player_throw',
-            frames: [
-                { key: 'player', frame: 14 },
-            ],
-            frameRate: 10,
-        });
+const states = {
+    'play': {
+        update: (player, time, delta, inputDirection) => {
+            player.handleJumping(delta);
+            player.handleMoving(inputDirection);
+            if (player.heldItem) player.handleHeldItem();
+            player.updateAnimations(inputDirection, delta);
+            player.handleInvincibility(delta);
+            player.checkOutOfBounds();
+        }
+    },
+    'dig': {
+        enter: (player) => {
+            player.body.setVelocity(0, 0);
+            player.body.setAcceleration(0, 0);
+            player.anims.play('player_dig');
+        },
+        update: (player, time, delta, inputDirection) => {
+            player.handleInvincibility(delta);
+            player.checkOutOfBounds();
+        }
+    },
+    'damage': {
+        enter: (player) => {
+            player.body.setVelocity(player.facingDirection * -200, -120);
+            player.body.setAcceleration(0, 0);
+            player.anims.play('player_damage');
+            player.damageTimer = 500;
+            player.body.setMaxVelocity(300, 300);
+        },
+        update: (player, time, delta, inputDirection) => {
+            player.damageTimer -= delta;
+            if (player.damageTimer <= 0) player.setState('play');
+            player.handleInvincibility(delta);
+            player.checkOutOfBounds();
+        },
+        exit: (player) => {
+            player.body.setMaxVelocity(walkMaxSpeed, veritcalMaxSpeed);
+        }
+    },
+    'defeat': {
+        enter: (player) => {
+            player.body.setVelocity(0, -200);
+            player.body.setAcceleration(0, 0);
+            player.body.setGravityY(20);
+            player.anims.play('player_defeat');
+            player.body.checkCollision.none = true;
+            player.isDefeated = true;
+            player.damageTimer = 2000;
+        },
+        update: (player, time, delta, inputDirection) => {
+            player.damageTimer -= delta;
+            if (player.damageTimer <= 0) player.scene.playerDie();
+        }
     }
 }

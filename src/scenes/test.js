@@ -6,6 +6,8 @@ import { Berry } from '/src/items/berry.js';
 import { Rock } from '/src/items/rock.js';
 import { BurriedItem, ItemType } from '/src/objects/burried_item.js';
 
+import createAnimations from '/src/managers/animations.js';
+
 export class TestScene extends Phaser.Scene {
     constructor() {
         super('TestScene');
@@ -36,6 +38,8 @@ export class TestScene extends Phaser.Scene {
     create() {
         this.cameras.main.setBackgroundColor('#96aaff');
 
+        createAnimations(this.anims);
+
         this.player = new Player(this, 0, 0);
         this.add.existing(this.player);
         this.cameras.main.startFollow(this.player);
@@ -43,7 +47,7 @@ export class TestScene extends Phaser.Scene {
         this.loadObjects();
         this.createOverlaps();
 
-        this.scene.launch('HUDScene');
+        // this.scene.launch('HUDScene');
     }
 
     loadObjects() {
@@ -55,7 +59,7 @@ export class TestScene extends Phaser.Scene {
         this.berries = this.physics.add.staticGroup({classType: Berry});
         this.burriedItems = this.physics.add.staticGroup({classType: BurriedItem});
 
-        this.enemies = this.physics.add.group({classType: Enemy, runChildUpdate: true});
+        this.enemies = this.physics.add.group({runChildUpdate: true});
         this.rocks = this.physics.add.group({classType: Rock, runChildUpdate: true});
         
         this.objectLayer.objects.forEach(object => {
@@ -87,37 +91,25 @@ export class TestScene extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.berries, (player, berry) => berry.onOverlap(), null, this);
         this.physics.add.overlap(this.player, this.burriedItems, (player, item) => item.onOverlap(player, item), null, this);
 
-        this.physics.add.overlap(this.player, this.enemies, (player, enemy) => this.playerDie(), null, this);
+        this.physics.add.overlap(this.player, this.enemies, (player, enemy) => enemy.attack(player), null, this);
 
         this.physics.add.overlap(this.rocks, this.berries, (rock, berry) => berry.onOverlap(), null, this);
     }
 
 
     update() {
-        if (this.player.y > this.terrain.height + 20) {
-            this.playerDie();
-        }
     }
 
     playerDie() {
         this.player.lives--;
         this.events.emit('updateLives', this.player.lives);
 
-        if (this.player.lives <= 0) {
-            this.scene.stop('HUDScene');
-            const hudScene = this.scene.get('HUDScene');
-            const score = hudScene ? hudScene.berryCount : 0;
-            this.scene.launch('GameOverScene', { score: score });
-            this.scene.stop();
-        return;
-        }
 
-        // Respawn no ponto inicial sem perder berries
-        this.objectLayer.objects.forEach(object => {
-            if (object.type === 'SpawnPoint') {
-                this.player.setPosition(object.x + 8, object.y - 12);
-                this.player.setVelocity(0, 0);
-            }
-        });
+        // this.scene.stop('HUDScene');
+        // const hudScene = this.scene.get('HUDScene');
+        // const score = hudScene ? hudScene.berryCount : 0;
+        this.scene.launch('GameOverScene', { score: 0 });
+        this.scene.stop();
+        return;
     }
 }

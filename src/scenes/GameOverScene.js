@@ -44,9 +44,9 @@ export class GameOverScene extends Phaser.Scene {
         // Input para reiniciar
         this.input.keyboard.once('keydown-R', () => {
             this.scene.stop('GameOverScene');
-            this.scene.stop('HUDScene');
+            // this.scene.stop('HUDScene');
             this.scene.start('TestScene');
-            this.scene.launch('HUDScene');
+            // this.scene.launch('HUDScene');
         });
     }
 }

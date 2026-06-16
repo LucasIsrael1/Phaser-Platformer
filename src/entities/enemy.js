@@ -23,4 +23,8 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.setVelocityX(this.velocity);
         this.setBounceX(1);
     }
+
+    attack(player) {
+        player.damage(1);
+    }
 }

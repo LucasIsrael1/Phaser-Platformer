@@ -3,33 +3,28 @@ export class HUDScene extends Phaser.Scene {
         super({ key: 'HUDScene' });
     }
 
+    preload() {
+        this.load.image('font_small_image', '/assets/fonts/small.png');
+    }
+
     create() {
-        // Fundo semi-transparente — largura ajustada
-        this.add.rectangle(0, 0, 105, 26, 0x000000, 0.35).setOrigin(0, 0);
+        // Fonte
+        this.cache.bitmapFont.add('small_font', Phaser.GameObjects.RetroFont.Parse(this, {
+            image: 'font_small_image', width: 8, height: 8, charsPerRow: 13,
+            chars: "0123456789.!?ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        }));
 
         // Ícone da berry
         const berryIcon = this.add.sprite(14, 13, 'berry').setOrigin(0.5, 0.5);
         
         // Texto do contador de berries
-        this.berryText = this.add.text(24, 13, 'x0', {
-            fontSize: '12px',
-            fill: '#ffffff',
-            fontFamily: 'monospace',
-            stroke: '#000000',
-            strokeThickness: 3
-        }).setOrigin(0, 0.5);
+        this.berryText = this.add.bitmapText(24, 13, 'small_font', 'X0');
 
         // Ícone do coração
         this.add.image(60, 13, 'heart').setOrigin(0.5, 0.5);
 
         // Texto do contador de vidas
-        this.livesText = this.add.text(70, 13, 'x3', {
-            fontSize: '12px',
-            fill: '#ffffff',
-            fontFamily: 'monospace',
-            stroke: '#000000',
-            strokeThickness: 3
-        }).setOrigin(0, 0.5);
+        this.berryText = this.add.bitmapText(70, 13, 'small_font', 'X3');
 
         this.berryCount = 0;
 
@@ -40,10 +35,10 @@ export class HUDScene extends Phaser.Scene {
 
         gameScene.events.on('berryCollected', () => {
             this.berryCount++;
-            this.berryText.setText('x' + this.berryCount);
+            // this.berryText.setText('x' + this.berryCount);
         });
         gameScene.events.on('updateLives', (lives) => {
-            this.livesText.setText('x' + lives);
+            // this.livesText.setText('x' + lives);
         });
     }
 }
