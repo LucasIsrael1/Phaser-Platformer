@@ -1,4 +1,6 @@
 import { Player } from "/src/entities/player.js";
+import { Enemy } from "/src/entities/enemy.js";
+import { Crab } from "/src/entities/crab.js";
 import { Berry } from "/src/items/berry.js";
 import { Rock } from "/src/items/rock.js";
 import { BurriedItem, ItemType } from "/src/objects/burried_item.js";
@@ -39,6 +41,7 @@ export class TestScene extends Phaser.Scene {
         
         this.createTerrain();
         this.loadObjects();
+
         this.scene.launch('HUDScene');
     }
 
@@ -60,8 +63,10 @@ export class TestScene extends Phaser.Scene {
         this.berries = this.physics.add.staticGroup({classType: Berry});
         this.burriedItems = this.physics.add.staticGroup({classType: BurriedItem});
 
-        this.rocks = this.physics.add.group({classType: Rock, runChildUpdate: true});
+        this.enemies = this.physics.add.group({classType: Enemy, runChildUpdate: true});
 
+        this.rocks = this.physics.add.group({classType: Rock, runChildUpdate: true});
+        
         this.objectLayer.objects.forEach(object => {
             object.x += 8;
             object.y -= 8;
@@ -75,20 +80,21 @@ export class TestScene extends Phaser.Scene {
                 case 'BurriedItem':
                     this.burriedItems.create(object.x, object.y + 5, object.properties[0].value);
                     break;
+                case 'Crab':
+                    const crab = new Crab(this, object.x, object.y - 3);
+                    this.enemies.add(crab);
+                    crab.setPhysics();
+                    break;
             }
         });
 
         this.physics.add.overlap(this.player, this.berries, (player, berry) => berry.onOverlap(), null, this);
         this.physics.add.overlap(this.player, this.burriedItems, (player, item) => item.onOverlap(player, item), null, this);
 
-        this.physics.add.overlap(this.rocks, this.berries, (rock, berry) => berry.onOverlap(), null, this);        
-    
-        // this.testRock = new Rock(this, this.player.x, this.player.y - 14);
+        this.physics.add.collider(this.enemies, this.terrainLayer);
+        this.physics.add.overlap(this.player, this.enemies, (player, enemy) => this.playerDie(), null, this);
 
-        // this.rocks.add(this.testRock);
-        // this.player.heldItem = this.testRock;
-        // this.testRock.pickUp(this.player);
-
+        this.physics.add.overlap(this.rocks, this.berries, (rock, berry) => berry.onOverlap(), null, this);
     }
 
 

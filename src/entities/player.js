@@ -1,4 +1,4 @@
-import { States } from "/src/entities/states/player_states.js";
+import { States } from "./states/player_states.js";
 
 const walkAcceleration = 190;
 const runAcceleration = 280;
@@ -126,6 +126,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    isOnGroundCoyote() {
+        return !this.isJumping && (this.body.blocked.down || this.timeInAir <= coyoteTime);
+    }
+
+    damage(amount) {
+        
+    }
+
     updateAnimations(inputDirection, delta) {
         this.setFlipX(this.facingDirection < 0);
         this.anims.timeScale = 1;
@@ -162,10 +170,6 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.anims.timeScale = 0.2 + Math.abs(this.body.velocity.x) * 0.02;
         this.anims.play(prefix + '_walk', true);
-    }
-
-    isOnGroundCoyote() {
-        return !this.isJumping && (this.body.blocked.down || this.timeInAir <= coyoteTime);
     }
 
     createAnimations() {

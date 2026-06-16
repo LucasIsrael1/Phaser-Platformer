@@ -1,36 +1,26 @@
 export class Enemy extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, sprite) {
+
+    direction = -1;
+    velocity = 0;
+
+    constructor(scene, x, y, sprite, velocity, hitbox) {
         super(scene, x, y, sprite);
         
         scene.physics.add.existing(this);
         scene.add.existing(this);
 
-        this.setSize(12, 11)
-        this.setOffset(6, 13);
+        this.velocity = velocity;
 
-        this.setDepth(9)
+        this.setSize(hitbox.w, hitbox.h);
+        this.setOffset(hitbox.x, hitbox.y);
+
+        this.setDepth(9);
+
+        this.setCollideWorldBounds(true);
     }
 
-    onOverlap(player, enemy) {
-        if (player.heldItem || player.isDigging) return;
-        if (Phaser.Input.Keyboard.JustDown(player.keys.item)) {
-            this.digUp(player);
-        }
-    }
-
-    update(time, delta) {
-        if (!this.body) return;
-
-        let inputDirection = this.keys.right.isDown - this.keys.left.isDown;
-
-        if (this.isDigging) {
-            this.handleDigging();
-        } else {
-            this.handleJumping(delta);
-            this.handleMoving(inputDirection);
-            if (this.heldItem) this.handleHeldItem();
-        }
-
-        this.updateAnimations(inputDirection, delta)
+    setPhysics() {
+        this.setVelocityX(this.velocity);
+        this.setBounceX(1);
     }
 }
