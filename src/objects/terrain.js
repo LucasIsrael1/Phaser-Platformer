@@ -1,0 +1,42 @@
+export const CollisionType = {
+    NONE: 0,
+    COLLIDE: 1,
+    ONE_WAY: 2
+}
+
+export class Terrain {
+    constructor(scene, key) {
+        this.scene = scene;
+
+        this.tilemap = scene.add.tilemap('tilemap');
+        const tilesetImage = this.tilemap.addTilesetImage(key, 'tiles');
+
+        this.layer = this.tilemap.createLayer('Terrain', tilesetImage, 0, 0);
+        this.tilemap.setCollisionBetween(1, 100, true, 'Terrain');
+
+        this.width = this.tilemap.widthInPixels;
+        this.height = this.tilemap.heightInPixels;
+
+        this.layer.forEachTile(tile => {
+            if (tile.properties.Collision == CollisionType.NONE) tile.setCollision(false);
+        });
+    }
+
+    setCameraBounds() {
+        this.scene.cameras.main.setBounds(0, 0, this.width, this.height);
+        this.scene.physics.world.setBounds(0, 0, this.width, this.height);
+    }
+
+    addCollider(object) {
+        this.scene.physics.add.collider(object, this.layer, null, (object, tile) => {
+            if (tile.properties.Collision == CollisionType.ONE_WAY) {
+                return object.body.velocity.y > 0 && object.body.bottom <= tile.getTop() + 2;
+            }
+            return true;
+        });
+    }
+
+    getObjectLayer() {
+        return this.tilemap.getObjectLayer('Objects');
+    }
+}

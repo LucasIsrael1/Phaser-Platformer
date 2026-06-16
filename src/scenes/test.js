@@ -1,9 +1,10 @@
-import { Player } from "/src/entities/player.js";
-import { Enemy } from "/src/entities/enemy.js";
-import { Crab } from "/src/entities/crab.js";
-import { Berry } from "/src/items/berry.js";
-import { Rock } from "/src/items/rock.js";
-import { BurriedItem, ItemType } from "/src/objects/burried_item.js";
+import { Player } from '/src/entities/player.js';
+import { Terrain } from '/src/objects/terrain.js';
+import { Enemy } from '/src/entities/enemy.js';
+import { Crab } from '/src/entities/crab.js';
+import { Berry } from '/src/items/berry.js';
+import { Rock } from '/src/items/rock.js';
+import { BurriedItem, ItemType } from '/src/objects/burried_item.js';
 
 export class TestScene extends Phaser.Scene {
     constructor() {
@@ -28,43 +29,33 @@ export class TestScene extends Phaser.Scene {
 
         this.load.spritesheet('shelled_crab', '/assets/sprites/shelled_crab.png', {frameWidth: 24, frameHeight: 24});
         this.load.image('crab_shell', '/assets/sprites/crab_shell.png');
+
+        
     }
 
     create() {
-        this.cameras.main.setBackgroundColor("#96aaff");
+        this.cameras.main.setBackgroundColor('#96aaff');
 
         this.player = new Player(this, 0, 0);
         this.add.existing(this.player);
         this.cameras.main.startFollow(this.player);
 
-        this.tilemap = this.add.tilemap('tilemap');
-        
-        this.createTerrain();
         this.loadObjects();
+        this.createOverlaps();
 
         this.scene.launch('HUDScene');
     }
 
-    createTerrain() {
-        const tilesetImage = this.tilemap.addTilesetImage('Sand', 'tiles');
-
-        this.terrainLayer = this.tilemap.createLayer('Terrain', tilesetImage, 0, 0);
-        this.tilemap.setCollisionBetween(1, 100, true, 'Terrain');
-
-        this.cameras.main.setBounds(0, 0, this.tilemap.widthInPixels, this.tilemap.heightInPixels);
-        this.physics.world.setBounds(0, 0, this.tilemap.widthInPixels, this.tilemap.heightInPixels);
-
-        this.physics.add.collider(this.player, this.terrainLayer);
-    }
-
     loadObjects() {
-        this.objectLayer = this.tilemap.getObjectLayer('Objects');
+        this.terrain = new Terrain(this, 'Sand');
+        this.terrain.setCameraBounds();
+
+        this.objectLayer = this.terrain.getObjectLayer();
 
         this.berries = this.physics.add.staticGroup({classType: Berry});
         this.burriedItems = this.physics.add.staticGroup({classType: BurriedItem});
 
         this.enemies = this.physics.add.group({classType: Enemy, runChildUpdate: true});
-
         this.rocks = this.physics.add.group({classType: Rock, runChildUpdate: true});
         
         this.objectLayer.objects.forEach(object => {
@@ -87,11 +78,15 @@ export class TestScene extends Phaser.Scene {
                     break;
             }
         });
+    }
+
+    createOverlaps() {
+        this.terrain.addCollider(this.player);
+        this.terrain.addCollider(this.enemies);
 
         this.physics.add.overlap(this.player, this.berries, (player, berry) => berry.onOverlap(), null, this);
         this.physics.add.overlap(this.player, this.burriedItems, (player, item) => item.onOverlap(player, item), null, this);
 
-        this.physics.add.collider(this.enemies, this.terrainLayer);
         this.physics.add.overlap(this.player, this.enemies, (player, enemy) => this.playerDie(), null, this);
 
         this.physics.add.overlap(this.rocks, this.berries, (rock, berry) => berry.onOverlap(), null, this);
@@ -99,7 +94,7 @@ export class TestScene extends Phaser.Scene {
 
 
     update() {
-        if (this.player.y > this.tilemap.heightInPixels + 20) {
+        if (this.player.y > this.terrain.height + 20) {
             this.playerDie();
         }
     }
