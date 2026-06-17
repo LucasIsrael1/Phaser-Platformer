@@ -23,6 +23,9 @@ export class TestScene extends Phaser.Scene {
         this.add.existing(this.player);
         this.cameras.main.startFollow(this.player);
 
+        // tecla de pausa
+        this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+
         this.loadObjects();
         this.createOverlaps();
 
@@ -86,6 +89,12 @@ export class TestScene extends Phaser.Scene {
 
 
     update() {
+        
+        // pausar com P
+        if (Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
+            this.scene.pause('TestScene');
+            this.scene.launch('PauseScene');
+        }
     }
 
     playerDie() {
