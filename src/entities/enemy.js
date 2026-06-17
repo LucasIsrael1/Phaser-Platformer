@@ -46,4 +46,14 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.setFlipX(false);
         }
     }
+
+    defeat() {
+    // pequena animação de derrota antes de destruir
+        this.body.setVelocity(0, -150);
+        this.body.setAllowGravity(true);
+        this.setFlipY(true);
+        this.scene.time.delayedCall(600, () => {
+            this.destroy();
+        });
+    }
 }

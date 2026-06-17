@@ -85,6 +85,9 @@ export class TestScene extends Phaser.Scene {
 
         this.physics.add.overlap(this.projectiles, this.berries, (projectile, berry) => berry.onOverlap(), null, this);
         this.physics.add.overlap(this.rocks, this.berries, (rock, berry) => berry.onOverlap(), null, this);
+
+        // pedras a atingir inimigos
+        this.physics.add.overlap(this.rocks, this.enemies, (rock, enemy) => rock.onHitEnemy(enemy), null, this);
     }
 
 
