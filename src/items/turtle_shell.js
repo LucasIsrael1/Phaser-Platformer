@@ -3,17 +3,18 @@ import { Turtle } from "/src/entities/turtle.js";
 
 export class TurtleShell extends Projectile  {
     
-    heldOffset = -14;
+    heldOffset = -20;
     isThrown = false;
 
     constructor(scene, x, y) {
-        super(scene, x, y, 'turtle_shell', -16, {x: 1, y: 2, w: 14, h: 12});
+        super(scene, x, y, 'turtle', -16, {x: 4, y: 10, w: 16, h: 14});
+        this.setFrame(3);
     }
 
     onCollide() {
         if (this.state !== ProjectileState.THROWN) return;
 
-        const newTurtle = new Turtle(this.scene, this.x, this.y - 8);
+        const newTurtle = new Turtle(this.scene, this.x, this.y);
         this.scene.enemies.add(newTurtle);
         newTurtle.setPhysics();
         this.destroy();

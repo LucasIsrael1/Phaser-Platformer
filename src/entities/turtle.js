@@ -10,20 +10,23 @@ export class Turtle extends Enemy  {
     }
 
     handleCollision(player) {
-        if (player.body.velocity.y > 0 && player.body.prev.y + player.body.height <= this.body.top + 8) {
-            player.platform = this;
+        if (player.body.prev.y + player.body.height > this.body.top + 8) {
+            this.attack(player);
+            return false;
+        }
+
+        if (player.body.velocity.y > 0) {
+            if (!player.platform) player.platform = this;
 
             if (
-                !player.heldItem && player.stateName == 'play'
+                !player.heldItem && player.stateName == 'play' && player.platform == this
                 && Phaser.Input.Keyboard.JustDown(player.keys.item)
             ) {
                 this.grab(player);
             }
-
-            return true;
         }
-        this.attack(player);
-        return false;
+
+        return true;
     }
 
     grab(player) {

@@ -1,22 +1,10 @@
 export class HUDScene extends Phaser.Scene {
     constructor() {
-        super({ key: 'hud' });
-    }
-
-    preload() {
-        this.load.image('berry_icon', '/assets/sprites/berry_icon.png');
-        this.load.spritesheet('heart', '/assets/sprites/heart.png', {frameWidth: 16, frameHeight: 16});
-
-        this.load.image('font_small_image', '/assets/fonts/small.png');
+        super({ key: 'HUDScene' });
     }
 
     create() {
         this.gameManager = this.game.registry.get('game_manager');
-        // Fonte
-        this.cache.bitmapFont.add('small_font', Phaser.GameObjects.RetroFont.Parse(this, {
-            image: 'font_small_image', width: 8, height: 8, charsPerRow: 13,
-            chars: ' 0123456789.,ABCDEFGHIJKLMNOPQRSTUVWXYZ!?()[]',
-        }));
 
         // Frutas
         this.add.sprite(18, 27, 'berry_icon').setOrigin(0.5, 0.5);

@@ -143,12 +143,15 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     handlePlatform() {
-        if (!this.platform?.body) return;
+        if (!this.platform?.body) {
+            this.platform = null;
+            return;
+        }
 
         this.x += this.platform.body.deltaX();
         this.y += this.platform.body.deltaY();
 
-        if (!this.body.touching.down || !this.platform.body.touching.up) this.platform = null;
+        if (!this.body.touching.down) this.platform = null;
     }
 
     checkOutOfBounds() {
