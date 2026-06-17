@@ -11,7 +11,9 @@ export class LoadingScene extends Phaser.Scene {
         this.load.spritesheet('berry', '/assets/sprites/berry.png', {frameWidth: 16, frameHeight: 16});
         this.load.image('rock', '/assets/sprites/rock.png');
         this.load.image('burried_item', '/assets/sprites/burried_item.png');
+        this.load.image('fish', '/assets/sprites/fish.png');
         this.load.image('psychic', '/assets/sprites/psychic.png');
+        
 
         this.load.spritesheet('crab', '/assets/sprites/crab.png', {frameWidth: 24, frameHeight: 24});
         this.load.spritesheet('turtle', '/assets/sprites/turtle.png', {frameWidth: 24, frameHeight: 24});

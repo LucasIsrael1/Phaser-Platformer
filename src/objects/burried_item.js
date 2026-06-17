@@ -1,9 +1,11 @@
 import { BurriedBerry } from "../items/burried_berry.js";
 import { Rock } from "/src/items/rock.js";
+import { BurriedFish } from "../items/burried_fish.js";
 
 export const ItemType = {
     BERRY: 0,
     ROCK: 1,
+    FISH: 2,
 }
 
 export class BurriedItem extends Phaser.Physics.Arcade.Sprite {
@@ -38,6 +40,9 @@ export class BurriedItem extends Phaser.Physics.Arcade.Sprite {
             case ItemType.ROCK:
                 this.spawnRock(player);
                 break;
+            case ItemType.FISH:
+                this.spawnFish(player);
+                break;
         }
 
         player.setState('play');
@@ -53,5 +58,9 @@ export class BurriedItem extends Phaser.Physics.Arcade.Sprite {
         this.scene.rocks.add(rock);
         player.heldItem = rock;
         rock.pickUp(player);
+    }
+
+    spawnFish(player) {
+        new BurriedFish(this.scene, this.x, this.y);
     }
 }
