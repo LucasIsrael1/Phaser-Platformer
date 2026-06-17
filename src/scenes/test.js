@@ -50,7 +50,7 @@ export class TestScene extends Phaser.Scene {
     }
 
     loadObjects() {
-        this.terrain = new Terrain(this, 'Sand');
+        this.terrain = new Terrain(this, 'Terrain');
         this.terrain.setCameraBounds();
 
         this.objectLayer = this.terrain.getObjectLayer();

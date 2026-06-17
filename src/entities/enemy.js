@@ -1,15 +1,15 @@
 export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
-    direction = -1;
-    velocity = 0;
+    
 
-    constructor(scene, x, y, sprite, velocity, hitbox) {
+    constructor(scene, x, y, sprite, speed, hitbox) {
         super(scene, x, y, sprite);
         
         scene.physics.add.existing(this);
         scene.add.existing(this);
 
-        this.velocity = velocity;
+        this.speed = speed;
+        this.direction = -1;
 
         this.setSize(hitbox.w, hitbox.h);
         this.setOffset(hitbox.x, hitbox.y);
@@ -20,7 +20,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     setPhysics() {
-        this.setVelocityX(this.velocity);
+        this.setVelocityX(this.moveSpeed);
         this.setBounceX(1);
     }
 
@@ -35,6 +35,15 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-        this.setFlipX(this.body.velocity.x > 0);
+        this.setVelocityX(this.direction * this.speed);
+
+        if (this.body.blocked.left) {
+            this.direction = 1;
+            this.setFlipX(true);
+        }
+        else if (this.body.blocked.right) {
+            this.direction = -1;
+            this.setFlipX(false);
+        }
     }
 }

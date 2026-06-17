@@ -13,7 +13,7 @@ export class TurtleShell extends Projectile  {
     onCollide() {
         if (this.state !== ProjectileState.THROWN) return;
 
-        const newTurtle = new Turtle(this.scene, this.x, this.y);
+        const newTurtle = new Turtle(this.scene, this.x, this.y - 8);
         this.scene.enemies.add(newTurtle);
         newTurtle.setPhysics();
         this.destroy();
