@@ -8,7 +8,8 @@ export class Berry extends Phaser.Physics.Arcade.Sprite  {
 
     onOverlap(player) {
         if (!this.active) return;
-        this.scene.events.emit('berryCollected');
+        const gameManager = this.scene.registry.get('game_manager');
+        this.scene.events.emit('update_berries', ++gameManager.berries);
         this.disableBody(true, true);
     }
 }

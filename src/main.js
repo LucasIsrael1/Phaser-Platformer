@@ -1,6 +1,7 @@
 import { TestScene } from '/src/scenes/test.js';
-import { HUDScene } from "/src/scenes/HUDScene.js";
+import { HUDScene } from "/src/scenes/hud.js";
 import { GameOverScene } from "/src/scenes/GameOverScene.js";
+import { GameManager } from '/src/managers/game_manager.js';
 
 const config = {
     type: Phaser.AUTO,
@@ -25,4 +26,6 @@ const config = {
 };
 
 console.log('Cenas registadas:', config.scene);
+
 const game = new Phaser.Game(config);
+game.registry.set('game_manager', new GameManager());

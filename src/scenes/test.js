@@ -25,14 +25,11 @@ export class TestScene extends Phaser.Scene {
         this.load.image('psychic', '/assets/sprites/psychic.png');
 
         this.load.image('burried_item', '/assets/sprites/burried_item.png');
-        this.load.image('heart', '/assets/sprites/heart.png');
 
         this.load.spritesheet('crab', '/assets/sprites/crab.png', {frameWidth: 24, frameHeight: 24});
 
         this.load.spritesheet('shelled_crab', '/assets/sprites/shelled_crab.png', {frameWidth: 24, frameHeight: 24});
         this.load.image('crab_shell', '/assets/sprites/crab_shell.png');
-
-        
     }
 
     create() {
@@ -47,7 +44,7 @@ export class TestScene extends Phaser.Scene {
         this.loadObjects();
         this.createOverlaps();
 
-        // this.scene.launch('HUDScene');
+        this.scene.launch('hud');
     }
 
     loadObjects() {
@@ -101,14 +98,15 @@ export class TestScene extends Phaser.Scene {
     }
 
     playerDie() {
-        this.player.lives--;
-        this.events.emit('updateLives', this.player.lives);
+        // this.player.lives--;
+        // this.events.emit('updateLives', this.player.lives);
 
 
         // this.scene.stop('HUDScene');
         // const hudScene = this.scene.get('HUDScene');
         // const score = hudScene ? hudScene.berryCount : 0;
-        this.scene.launch('GameOverScene', { score: 0 });
+        const gameManager = this.game.registry.get('game_manager');
+        this.scene.launch('GameOverScene', { score: gameManager.berries });
         this.scene.stop();
         return;
     }

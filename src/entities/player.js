@@ -139,7 +139,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     checkOutOfBounds() {
-        if (this.y > this.scene.terrain.height + 20) {
+        if (this.y > this.scene.terrain.height + 10) {
             this.setState('defeat');
         }
     }
@@ -153,12 +153,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.hp -= amount;
         if (this.hp <= 0) {
-            this.hp = 0;
             this.setState('defeat');
             return;
         }
         this.setState('damage');
         this.invincibilityFrames = 2000;
+        this.scene.events.emit('update_hearts', this.hp);
     }
 
     updateAnimations(inputDirection, delta) {
@@ -249,6 +249,8 @@ const states = {
             player.body.checkCollision.none = true;
             player.isDefeated = true;
             player.damageTimer = 2000;
+            player.visible = true;
+            player.scene.events.emit('update_hearts', 0);
         },
         update: (player, time, delta, inputDirection) => {
             player.damageTimer -= delta;
