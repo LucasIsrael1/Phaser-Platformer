@@ -1,7 +1,10 @@
+import { Player } from '/src/entities/player.js';
+
 export const CollisionType = {
     NONE: 0,
     COLLIDE: 1,
-    ONE_WAY: 2
+    ONE_WAY: 2,
+    HURT: 3,
 }
 
 export class Terrain {
@@ -29,10 +32,20 @@ export class Terrain {
 
     addCollider(object, callback = null) {
         this.scene.physics.add.collider(object, this.layer, callback, (object, tile) => {
-            if (tile.properties.Collision == CollisionType.ONE_WAY) {
-                return object.body.velocity.y > 0 && object.body.bottom <= tile.getTop() + 6;
+            switch(tile.properties.Collision) {
+                case CollisionType.ONE_WAY:
+                    return object.body.velocity.y > 0 && object.body.bottom <= tile.getTop() + 6;
+                case CollisionType.HURT:
+                    if (object instanceof Player) {
+                        if (object.invincibilityFrames > 0) return true;
+                        object.knockbackDirection = object.facingDirection * -1;
+                        object.damage(1);
+                        return false;
+                    }
+                    return true;
+                default:
+                    return true;
             }
-            return true;
         });
     }
 
