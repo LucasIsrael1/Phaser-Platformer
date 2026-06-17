@@ -2,6 +2,7 @@ import { Player } from '/src/entities/player.js';
 import { Terrain } from '/src/objects/terrain.js';
 import { Enemy } from '/src/entities/enemy.js';
 import { Crab } from '/src/entities/crab.js';
+import { Turtle } from '/src/entities/turtle.js';
 import { Berry } from '/src/items/berry.js';
 import { Rock } from '/src/items/rock.js';
 import { BurriedItem, ItemType } from '/src/objects/burried_item.js';
@@ -27,9 +28,10 @@ export class TestScene extends Phaser.Scene {
         this.load.image('burried_item', '/assets/sprites/burried_item.png');
 
         this.load.spritesheet('crab', '/assets/sprites/crab.png', {frameWidth: 24, frameHeight: 24});
+        this.load.spritesheet('turtle', '/assets/sprites/turtle.png', {frameWidth: 24, frameHeight: 24});
 
         this.load.spritesheet('shelled_crab', '/assets/sprites/shelled_crab.png', {frameWidth: 24, frameHeight: 24});
-        this.load.image('crab_shell', '/assets/sprites/crab_shell.png');
+        this.load.image('turtle_shell', '/assets/sprites/turtle_shell.png');
     }
 
     create() {
@@ -57,7 +59,9 @@ export class TestScene extends Phaser.Scene {
         this.burriedItems = this.physics.add.staticGroup({classType: BurriedItem});
 
         this.enemies = this.physics.add.group({runChildUpdate: true});
-        this.rocks = this.physics.add.group({classType: Rock, runChildUpdate: true});
+
+        this.projectiles = this.physics.add.group({runChildUpdate: true});
+        this.rocks = this.physics.add.group({runChildUpdate: true});
         
         this.objectLayer.objects.forEach(object => {
             object.x += 8;
@@ -77,6 +81,11 @@ export class TestScene extends Phaser.Scene {
                     this.enemies.add(crab);
                     crab.setPhysics();
                     break;
+                case 'Turtle':
+                    const turtle = new Turtle(this, object.x, object.y - 3);
+                    this.enemies.add(turtle);
+                    turtle.setPhysics();
+                    break;
             }
         });
     }
@@ -84,12 +93,14 @@ export class TestScene extends Phaser.Scene {
     createOverlaps() {
         this.terrain.addCollider(this.player);
         this.terrain.addCollider(this.enemies);
+        this.terrain.addCollider(this.projectiles, (projectile, tile) => projectile.onCollide());
+
+        this.physics.add.collider(this.enemies, this.player, null, (player, enemy) => enemy.handleCollision(player));
 
         this.physics.add.overlap(this.player, this.berries, (player, berry) => berry.onOverlap(), null, this);
         this.physics.add.overlap(this.player, this.burriedItems, (player, item) => item.onOverlap(player, item), null, this);
 
-        this.physics.add.overlap(this.player, this.enemies, (player, enemy) => enemy.attack(player), null, this);
-
+        this.physics.add.overlap(this.projectiles, this.berries, (projectile, berry) => berry.onOverlap(), null, this);
         this.physics.add.overlap(this.rocks, this.berries, (rock, berry) => berry.onOverlap(), null, this);
     }
 

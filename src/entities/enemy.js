@@ -24,7 +24,17 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.setBounceX(1);
     }
 
+    handleCollision(player) {
+        this.attack(player);
+        return false;
+    }
+
     attack(player) {
+        player.knockbackDirection = Math.sign(player.x - this.x);
         player.damage(1);
+    }
+
+    update() {
+        this.setFlipX(this.body.velocity.x > 0);
     }
 }

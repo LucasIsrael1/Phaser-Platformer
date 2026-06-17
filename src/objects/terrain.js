@@ -27,8 +27,8 @@ export class Terrain {
         this.scene.physics.world.setBounds(0, 0, this.width, this.height);
     }
 
-    addCollider(object) {
-        this.scene.physics.add.collider(object, this.layer, null, (object, tile) => {
+    addCollider(object, callback = null) {
+        this.scene.physics.add.collider(object, this.layer, callback, (object, tile) => {
             if (tile.properties.Collision == CollisionType.ONE_WAY) {
                 return object.body.velocity.y > 0 && object.body.bottom <= tile.getTop() + 6;
             }

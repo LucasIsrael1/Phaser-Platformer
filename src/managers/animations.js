@@ -155,4 +155,16 @@ export default (anims) => {
         frameRate: 5,
         repeat: -1
     });
+
+    anims.create({
+        key: 'turtle_move',
+        frames: [
+            { key: 'turtle', frame: 0 },
+            { key: 'turtle', frame: 1 },
+            { key: 'turtle', frame: 0 },
+            { key: 'turtle', frame: 2 },
+        ],
+        frameRate: 5,
+        repeat: -1
+    });
 }

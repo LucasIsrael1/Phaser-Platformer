@@ -118,4 +118,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite  {
 
         this.psychicParticles.stop();
     }
+
+    onCollide() {   
+    }
 }

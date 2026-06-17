@@ -28,11 +28,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     heldItem = null;
     throwTimer = 0;
 
+    platform = null;
+
     stateName = '';
     currentState = null;
 
     damageTimer = 0;
     invincibilityFrames = 0;
+    knockbackDirection = 0;
 
     isDefeated = false;
 
@@ -76,6 +79,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     setState(name) {
         if (name == this.stateName) return;
+        this.stateName = name;
         if (this.currentState?.exit) this.currentState.exit(this);
         this.currentState = states[name];
         if (this.currentState?.enter) this.currentState.enter(this);
@@ -136,6 +140,15 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         
         this.invincibilityFrames -= delta;
         this.visible = this.invincibilityFrames % 100 >= 50;
+    }
+
+    handlePlatform() {
+        if (!this.platform?.body) return;
+
+        this.x += this.platform.body.deltaX();
+        this.y += this.platform.body.deltaY();
+
+        if (!this.body.touching.down || !this.platform.body.touching.up) this.platform = null;
     }
 
     checkOutOfBounds() {
@@ -208,6 +221,7 @@ const states = {
             if (player.heldItem) player.handleHeldItem();
             player.updateAnimations(inputDirection, delta);
             player.handleInvincibility(delta);
+            player.handlePlatform();
             player.checkOutOfBounds();
         }
     },
@@ -219,12 +233,13 @@ const states = {
         },
         update: (player, time, delta, inputDirection) => {
             player.handleInvincibility(delta);
+            player.handlePlatform();
             player.checkOutOfBounds();
         }
     },
     'damage': {
         enter: (player) => {
-            player.body.setVelocity(player.facingDirection * -200, -120);
+            player.body.setVelocity(player.knockbackDirection * 200, -120);
             player.body.setAcceleration(0, 0);
             player.anims.play('player_damage');
             player.damageTimer = 500;
@@ -234,6 +249,7 @@ const states = {
             player.damageTimer -= delta;
             if (player.damageTimer <= 0) player.setState('play');
             player.handleInvincibility(delta);
+            player.handlePlatform();
             player.checkOutOfBounds();
         },
         exit: (player) => {

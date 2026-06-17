@@ -18,7 +18,7 @@ export class BurriedItem extends Phaser.Physics.Arcade.Sprite {
     }
 
     onOverlap(player, item) {
-        if (player.heldItem || player.isDigging || !player.body.blocked.down) return;
+        if (player.heldItem || !player.stateName == 'play' || !player.body.blocked.down) return;
         if (Phaser.Input.Keyboard.JustDown(player.keys.item)) {
             this.digUp(player);
         }
@@ -49,7 +49,8 @@ export class BurriedItem extends Phaser.Physics.Arcade.Sprite {
     }
 
     spawnRock(player) {
-        const rock = this.scene.rocks.create(this.x, this.y);
+        const rock = new Rock(this.scene, this.x, this.y)
+        this.scene.rocks.add(rock);
         player.heldItem = rock;
         rock.pickUp(player);
     }
