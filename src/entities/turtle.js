@@ -10,6 +10,8 @@ export class Turtle extends Enemy  {
     }
 
     handleCollision(player) {
+        if (this.isDefeated) return false;
+
         if (player.body.prev.y + player.body.height > this.body.top + 8) {
             this.attack(player);
             return false;
@@ -46,6 +48,7 @@ export class Turtle extends Enemy  {
 
     update(time, delta) {
         super.update(time, delta);
+        if (!this.isInRange) return;
 
         const canContinue = this.scene.terrain.isWalkable(this.x + this.direction * 4, this.y + 20);
 

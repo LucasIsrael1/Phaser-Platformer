@@ -89,7 +89,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite  {
     }
 
     despawnIfOffscreen() {
-        if (this.y > this.scene.cameras.main.worldView.bottom + 20) {
+        if (this.y > this.scene.terrain.height + 16) {
             this.destroy();
         }
     }

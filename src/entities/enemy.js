@@ -1,6 +1,9 @@
+const cameraRange = 200;
+
 export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
-    
+    isInRange = false;
+    isDefeated = false;
 
     constructor(scene, x, y, sprite, speed, hitbox) {
         super(scene, x, y, sprite);
@@ -15,8 +18,6 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.setOffset(hitbox.x, hitbox.y);
 
         this.setDepth(9);
-
-        this.setCollideWorldBounds(true);
     }
 
     setPhysics() {
@@ -25,7 +26,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     handleCollision(player) {
-        this.attack(player);
+        if (!this.isDefeated) this.attack(player);
         return false;
     }
 
@@ -35,6 +36,14 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
+        const cam = this.scene.cameras.main;        
+        this.isInRange = this.x > cam.worldView.x - cameraRange && this.x < cam.worldView.right + cameraRange;
+
+        if (!this.isInRange) {
+            this.setVelocityX(0);
+            return;
+        }
+
         this.setVelocityX(this.direction * this.speed);
 
         if (this.body.blocked.left) {
@@ -48,10 +57,11 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     defeat() {
-    // pequena animação de derrota antes de destruir
+        // Pequena animação de derrota antes de destruir
         this.body.setVelocity(0, -150);
         this.body.setAllowGravity(true);
         this.setFlipY(true);
+        this.isDefeated = true;
         this.scene.time.delayedCall(600, () => {
             this.destroy();
         });
