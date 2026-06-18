@@ -1,5 +1,5 @@
 import { BurriedBerry } from "../items/burried_berry.js";
-import { Rock } from "/src/items/rock.js";
+import { Rock } from "../items/rock.js";
 import { BurriedFish } from "../items/burried_fish.js";
 
 export const ItemType = {

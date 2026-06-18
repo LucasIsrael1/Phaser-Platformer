@@ -1,4 +1,4 @@
-import { MenuManager } from '/src/managers/menu_manager.js';
+import { MenuManager } from '../managers/menu_manager.js';
 
 export class TitleScreenScene extends Phaser.Scene {
     constructor() {
@@ -8,7 +8,7 @@ export class TitleScreenScene extends Phaser.Scene {
     create() {
         let titleMusic = this.sound.getAll('title')[0];
         if (!titleMusic) {
-            titleMusic = this.sound.add('title', { loop: true, volume: 0.5 });
+            titleMusic = this.sound.add('title', { loop: true, volume: 0.4 });
             titleMusic.play();
         } else if (!titleMusic.isPlaying) {
             titleMusic.play();

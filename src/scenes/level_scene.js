@@ -1,11 +1,11 @@
-import { Player } from '/src/entities/player.js';
-import { Terrain } from '/src/objects/terrain.js';
-import { Enemy } from '/src/entities/enemy.js';
-import { Crab } from '/src/entities/crab.js';
-import { Turtle } from '/src/entities/turtle.js';
-import { Berry } from '/src/items/berry.js';
-import { Rock } from '/src/items/rock.js';
-import { BurriedItem, ItemType } from '/src/objects/burried_item.js';
+import { Player } from '../entities/player.js';
+import { Terrain } from '../objects/terrain.js';
+import { Enemy } from '../entities/enemy.js';
+import { Crab } from '../entities/crab.js';
+import { Turtle } from '../entities/turtle.js';
+import { Berry } from '../items/berry.js';
+import { Rock } from '../items/rock.js';
+import { BurriedItem, ItemType } from '../objects/burried_item.js';
 
 export class LevelScene extends Phaser.Scene {
     constructor() {

@@ -1,5 +1,5 @@
 import { Enemy } from "./enemy.js";
-import { TurtleShell } from "/src/items/turtle_shell.js";
+import { TurtleShell } from "../items/turtle_shell.js";
 
 export class Turtle extends Enemy  {
     

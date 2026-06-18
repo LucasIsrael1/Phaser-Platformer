@@ -1,5 +1,5 @@
 import { Projectile, ProjectileState } from "./projectile.js";
-import { Turtle } from "/src/entities/turtle.js";
+import { Turtle } from "../entities/turtle.js";
 
 export class TurtleShell extends Projectile  {
     

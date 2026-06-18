@@ -1,4 +1,4 @@
-import createAnimations from '/src/managers/animations.js';
+import createAnimations from '../managers/animations.js';
 
 export class LoadingScene extends Phaser.Scene {
     constructor() { super('LoadingScene'); }

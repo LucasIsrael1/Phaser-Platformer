@@ -1,4 +1,4 @@
-import { MenuManager } from '/src/managers/menu_manager.js';
+import { MenuManager } from '../managers/menu_manager.js';
 
 export class LevelSelectScene extends Phaser.Scene {
     constructor() {

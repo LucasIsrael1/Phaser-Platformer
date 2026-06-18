@@ -1,4 +1,4 @@
-import { Player } from '/src/entities/player.js';
+import { Player } from '../entities/player.js';
 
 export const CollisionType = {
     NONE: 0,

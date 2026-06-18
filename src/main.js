@@ -1,16 +1,16 @@
-import { LevelScene } from '/src/scenes/level_scene.js';
-import { HUDScene } from "/src/scenes/hud.js";
-import { GameOverScene } from "/src/scenes/game_over.js";
-import { TitleScreenScene } from '/src/scenes/title_screen.js';
-import { LevelSelectScene } from '/src/scenes/level_select_scene.js';
-import { LoadingScene } from '/src/scenes/loading_scene.js';
-import { GameManager } from '/src/managers/game_manager.js';
-import { PauseScene } from '/src/scenes/pause_scene.js';
-import { WinScene } from '/src/scenes/win_scene.js';
-import { EndScene } from '/src/scenes/end_scene.js';
-import { ControlsScene } from '/src/scenes/controls_scene.js';
-import { OptionsScene } from '/src/scenes/options_scene.js';
-import { CreditsScene } from '/src/scenes/credits_scene.js';
+import { LevelScene } from './scenes/level_scene.js';
+import { HUDScene } from "./scenes/hud.js";
+import { GameOverScene } from "./scenes/game_over.js";
+import { TitleScreenScene } from './scenes/title_screen.js';
+import { LevelSelectScene } from './scenes/level_select_scene.js';
+import { LoadingScene } from './scenes/loading_scene.js';
+import { GameManager } from './managers/game_manager.js';
+import { PauseScene } from './scenes/pause_scene.js';
+import { WinScene } from './scenes/win_scene.js';
+import { EndScene } from './scenes/end_scene.js';
+import { ControlsScene } from './scenes/controls_scene.js';
+import { OptionsScene } from './scenes/options_scene.js';
+import { CreditsScene } from './scenes/credits_scene.js';
 
 const config = {
     type: Phaser.AUTO,
