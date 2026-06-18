@@ -32,4 +32,5 @@ const config = {
 console.log('Cenas registadas:', config.scene);
 
 const game = new Phaser.Game(config);
-game.registry.set('game_manager', new GameManager());
+const gm = new GameManager();
+game.registry.set('game_manager', gm);
