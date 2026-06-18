@@ -11,7 +11,7 @@ export class GameManager {
     }
 
     getLevelPath() {
-        return '/assets/levels/level' + this.level + '.json';
+        return '../../assets/levels/level' + this.level + '.json';
     }
 
     t(key) {
