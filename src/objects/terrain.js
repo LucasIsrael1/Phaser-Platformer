@@ -24,23 +24,12 @@ export class Terrain {
             if (tile.properties.Collision == CollisionType.NONE) {
                 tile.setCollision(false);
             }
-            else if (tile.properties.Collision == CollisionType.ONE_WAY) {
-                tile.collideUp = true;
-                tile.collideDown = false;
-                tile.collideLeft = false;
-                tile.collideRight = false;
-
-                tile.faceTop = true;
-                tile.faceBottom = false;
-                tile.faceLeft = false;
-                tile.faceRight = false;
-            }
         })
     }
 
     setCameraBounds() {
-        this.scene.cameras.main.setBounds(0, 0, this.width, this.height);
-        this.scene.physics.world.setBounds(0, 0, this.width, this.height);
+        this.scene.cameras.main.setBounds(16, 16, this.width - 32, this.height - 32);
+        this.scene.physics.world.setBounds(16, 16, this.width - 32, this.height - 32);
     }
 
     addCollider(object, callback = null) {

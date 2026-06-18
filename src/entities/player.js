@@ -47,6 +47,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.body.setDragX(800);
         this.body.setGravityY(jumpGravity);
         this.body.setMaxVelocity(walkMaxSpeed, veritcalMaxSpeed);
+        this.body.setCollideWorldBounds(true);
 
         this.setSize(9, 15)
         this.setOffset(8, 9);
@@ -155,7 +156,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     checkOutOfBounds() {
-        if (this.y > this.scene.terrain.height + 10) {
+        if (this.y > this.scene.terrain.height - 32) {
+            this.scene.sound.play('lost_1heart', { volume: 0.7 });
             this.setState('defeat');
         }
     }
@@ -266,6 +268,7 @@ const states = {
             player.body.setVelocity(0, -200);
             player.body.setAcceleration(0, 0);
             player.body.setGravityY(20);
+            player.body.setCollideWorldBounds(false);
             player.anims.play('player_defeat');
             player.body.checkCollision.none = true;
             player.isDefeated = true;
