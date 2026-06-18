@@ -27,6 +27,7 @@ const config = {
     },
     render: {
         antialias: false,
+        pixelArt: true,
         roundPixels: true
     },
     scale: {

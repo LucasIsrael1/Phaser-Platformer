@@ -27,11 +27,18 @@ export class LoadingScene extends Phaser.Scene {
         this.load.image('menu_bg', '/assets/bgs/menu_bg.png');
         this.load.image('cave_bg', '/assets/bgs/cave_bg.png');
 
+        this.load.image('sky_day', '/assets/bgs/sky_day.png');
+        this.load.image('hills_day', '/assets/bgs/hills_day.png');
+        this.load.image('sky_afternoon', '/assets/bgs/sky_afternoon.png');
+        this.load.image('hills_afternoon', '/assets/bgs/hills_afternoon.png');
+        this.load.image('sky_cave', '/assets/bgs/sky_cave.png');
+
         this.load.audio('music', '/assets/audio/music.ogg');
         this.load.audio('title', '/assets/audio/title.ogg');
         this.load.audio('game_over', '/assets/audio/game_over.mp3');
         this.load.audio('level_clear', '/assets/audio/level_clear.mp3');
-        this.load.audio('damage', '/assets/audio/damage.mp3');
+
+        this.load.audio('damage', '/assets/audio/damage.ogg');
         this.load.audio('jump', '/assets/audio/jump.mp3');
         this.load.audio('fruta', '/assets/audio/fruta.mp3');
         this.load.audio('throw', '/assets/audio/throw.mp3');

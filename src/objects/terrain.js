@@ -7,10 +7,10 @@ export const CollisionType = {
     HURT: 3,
 }
 
-const skyColors = [
-    '#779BFF',
-    '#350900',
-    '#FFDCB2',
+const skyTypes = [
+    'day',
+    'cave',
+    'afternoon',
 ];
 
 export class Terrain {
@@ -64,8 +64,16 @@ export class Terrain {
         return this.tilemap.getObjectLayer('Objects');
     }
 
-    getSkyColor() {
-        return skyColors[this.tilemap.properties[0].value]
+    setBackground() {
+        const skyType = skyTypes[this.tilemap.properties[0].value]
+
+        this.scene.sky = this.scene.add.tileSprite(0, 0, this.scene.scale.width, 180, 'sky_' + skyType)
+            .setOrigin(0, 0).setScrollFactor(0).setDepth(-1);
+        
+        if (skyType !== 'cave') {
+            this.scene.hills = this.scene.add.tileSprite(0, 0, this.scene.scale.width, 180, 'hills_' + skyType)
+            .setOrigin(0, 0).setScrollFactor(0).setDepth(-1);
+        }
     }
 
     isWalkable(x, y) {

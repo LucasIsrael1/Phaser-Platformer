@@ -26,7 +26,9 @@ export class LevelScene extends Phaser.Scene {
 
         this.terrain = new Terrain(this, 'Terrain');
         this.terrain.setCameraBounds();
-        this.cameras.main.setBackgroundColor(this.terrain.getSkyColor());
+        this.terrain.setBackground()
+
+        
 
         this.player = new Player(this, 0, 0);
         this.add.existing(this.player);
@@ -118,12 +120,23 @@ export class LevelScene extends Phaser.Scene {
 
 
     update() {
+
+        const camX = this.cameras.main.scrollX;
+        const camY = this.cameras.main.scrollY;
+
+        this.sky.tilePositionX = camX * 0.05;
+        this.sky.tilePositionY = camY * 0.1;
+
+        if (this.hills) {
+            this.hills.tilePositionX = camX * 0.5;
+            this.hills.tilePositionY = camY * 0.5;
+        }
+
         if (Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
             this.music.pause();
             this.scene.pause('LevelScene');
             this.scene.launch('PauseScene');
         }
-        
     }
 
     playerDie() {
