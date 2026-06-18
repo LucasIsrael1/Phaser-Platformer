@@ -23,7 +23,9 @@ export class TestScene extends Phaser.Scene {
         const gm = this.game.registry.get('game_manager');
         if (gm) gm.berries = 0;
 
-        this.cameras.main.setBackgroundColor('#96aaff');
+        this.terrain = new Terrain(this, 'Terrain');
+        this.terrain.setCameraBounds();
+        this.cameras.main.setBackgroundColor(this.terrain.getSkyColor());
 
         this.player = new Player(this, 0, 0);
         this.add.existing(this.player);
@@ -45,9 +47,6 @@ export class TestScene extends Phaser.Scene {
     }
 
     loadObjects() {
-        this.terrain = new Terrain(this, 'Terrain');
-        this.terrain.setCameraBounds();
-
         this.objectLayer = this.terrain.getObjectLayer();
 
         this.berries = this.physics.add.staticGroup({classType: Berry});
@@ -81,7 +80,7 @@ export class TestScene extends Phaser.Scene {
                 case 'SpawnPoint':
                     this.player.setPosition(object.x, object.y - 4);
                     break;
-                case 'EndCave':
+                case 'Cave':
                     const cave = this.physics.add.staticImage(object.x, object.y - 7, 'cave');
                     this.add.existing(cave);
                     this.physics.add.overlap(this.player, cave, () => this.enterCave(), null, this);

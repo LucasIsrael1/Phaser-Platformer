@@ -65,7 +65,6 @@ const translations = {
         pause: 'PAUSE',
         resume: 'PRESS [P] TO CONTINUE',
     },
-
     ES: {
         title: 'OTTER ISLAND',
         subtitle: 'LA AVENTURA DE LA NUTRIA',
@@ -90,7 +89,6 @@ const translations = {
         pause: 'PAUSA',
         resume: 'PULSA [P] PARA CONTINUAR',
     },
-    
     FR: {
         title: 'OTTER ISLAND',
         subtitle: 'L AVENTURE DE LA LOUTRE',
