@@ -17,6 +17,10 @@ export class TestScene extends Phaser.Scene {
     }
 
     create() {
+        // resetar game manager ao iniciar
+        const gm = this.game.registry.get('game_manager');
+        if (gm) gm.berries = 0;
+
         this.cameras.main.setBackgroundColor('#96aaff');
 
         this.player = new Player(this, 0, 0);
@@ -34,6 +38,12 @@ export class TestScene extends Phaser.Scene {
         this.input.keyboard.once('keydown', () => {
             if (!this.music.isPlaying) this.music.play();
         });
+
+        // gruta no fim do mapa
+        this.cave = this.add.image(1528, 272, 'cave').setDepth(5);
+        this.caveBody = this.physics.add.staticImage(1528, 272, 'cave');
+        this.caveBody.setVisible(false);
+        this.physics.add.overlap(this.player, this.caveBody, () => this.enterCave(), null, this);
 
         this.scene.launch('HUDScene');
     }
@@ -77,6 +87,9 @@ export class TestScene extends Phaser.Scene {
                     break;
             }
         });
+
+        // contar total de berries no mapa
+        this.totalBerries = this.berries.getLength();
     }
 
     createOverlaps() {
@@ -123,5 +136,13 @@ export class TestScene extends Phaser.Scene {
         this.music.stop();
         this.scene.stop();
         return;
+    }
+
+    enterCave() {
+        const gameManager = this.game.registry.get('game_manager');
+        this.music.stop();
+        this.scene.stop('HUDScene');
+        this.scene.launch('WinScene', { score: gameManager.berries });
+        this.scene.stop();
     }
 }

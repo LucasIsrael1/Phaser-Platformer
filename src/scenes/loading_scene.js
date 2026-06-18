@@ -21,6 +21,7 @@ export class LoadingScene extends Phaser.Scene {
         this.load.image('font_small_image', '/assets/fonts/small.png');
         this.load.image('font_big_image', '/assets/fonts/big.png');
         this.load.image('berry_icon', '/assets/sprites/berry_icon.png');
+        this.load.image('cave', '/assets/sprites/cave.png');
         
         this.load.spritesheet('heart', '/assets/sprites/heart.png', {frameWidth: 16, frameHeight: 16});
 
