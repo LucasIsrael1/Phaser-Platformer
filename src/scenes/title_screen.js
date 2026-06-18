@@ -1,83 +1,61 @@
-const MENU_ITEMS = ['JOGAR', 'CONTROLOS', 'OPCOES', 'CREDITOS'];
-
 export class TitleScreenScene extends Phaser.Scene {
     constructor() {
         super({ key: 'TitleScreenScene' });
     }
 
     create() {
-        const cx = this.cameras.main.width / 2;
+        const gm = this.game.registry.get('game_manager');
+        const t = (key) => gm.t(key);
+
         this.add.image(160, 90, 'menu_bg').setOrigin(0.5, 0.5).setDepth(0);
         this.cameras.main.setBackgroundColor('#000000');
 
-        // título
-        this.add.bitmapText(cx, 30, 'big_font', 'OTTER ISLAND').setOrigin(0.5, 0.5);
-        this.add.bitmapText(cx, 50, 'small_font', 'A AVENTURA DA LONTRA').setOrigin(0.5, 0.5);
+        this.add.bitmapText(160, 30, 'big_font', t('title')).setOrigin(0.5, 0.5);
+        this.add.bitmapText(160, 50, 'small_font', t('subtitle')).setOrigin(0.5, 0.5);
 
-        // opções do menu
         this.selectedIndex = 0;
+        this.menuKeys = ['play', 'controls', 'options', 'credits'];
         this.menuItems = [];
 
-        MENU_ITEMS.forEach((item, i) => {
-            const text = this.add.bitmapText(cx, 80 + i * 22, 'small_font', item).setOrigin(0.5, 0.5);
+        this.menuKeys.forEach((key, i) => {
+            const text = this.add.bitmapText(160, 80 + i * 22, 'small_font', t(key)).setOrigin(0.5, 0.5);
             this.menuItems.push(text);
         });
 
         this.updateSelection();
 
-        // teclas
-        this.keys = this.input.keyboard.addKeys({
-            up: Phaser.Input.Keyboard.KeyCodes.UP,
-            down: Phaser.Input.Keyboard.KeyCodes.DOWN,
-            confirm: Phaser.Input.Keyboard.KeyCodes.Z,
-        });
-
         this.input.keyboard.on('keydown-UP', () => {
-            this.selectedIndex = (this.selectedIndex - 1 + MENU_ITEMS.length) % MENU_ITEMS.length;
+            this.selectedIndex = (this.selectedIndex - 1 + this.menuKeys.length) % this.menuKeys.length;
             this.updateSelection();
         });
-
         this.input.keyboard.on('keydown-DOWN', () => {
-            this.selectedIndex = (this.selectedIndex + 1) % MENU_ITEMS.length;
+            this.selectedIndex = (this.selectedIndex + 1) % this.menuKeys.length;
             this.updateSelection();
         });
-
-        this.input.keyboard.on('keydown-Z', () => {
-            this.selectOption();
-        });
-
-        this.input.keyboard.on('keydown-ENTER', () => {
-            this.selectOption();
-        });
+        this.input.keyboard.on('keydown-Z', () => this.selectOption());
+        this.input.keyboard.on('keydown-ENTER', () => this.selectOption());
     }
 
     updateSelection() {
-        this.menuItems.forEach((item, i) => {
+        const gm = this.game.registry.get('game_manager');
+        this.menuKeys.forEach((key, i) => {
+            const label = gm.t(key);
             if (i === this.selectedIndex) {
-                item.setText('> ' + MENU_ITEMS[i] + ' <');
-                item.setTint(0xFFD700);
+                this.menuItems[i].setText('> ' + label + ' <');
+                this.menuItems[i].setTint(0xFFD700);
             } else {
-                item.setText(MENU_ITEMS[i]);
-                item.clearTint();
+                this.menuItems[i].setText(label);
+                this.menuItems[i].clearTint();
             }
         });
     }
 
     selectOption() {
         switch (this.selectedIndex) {
-            case 0:
-                this.scene.start('TestScene');
-                this.scene.launch('HUDScene');
-                break;
-            case 1:
-                this.scene.start('ControlsScene');
-                break;
-            case 2:
-                this.scene.start('OptionsScene');
-                break;
-            case 3:
-                this.scene.start('CreditsScene');
-                break;
+            case 0: this.scene.start('TestScene'); this.scene.launch('HUDScene'); break;
+            case 1: this.scene.start('ControlsScene'); break;
+            case 2: this.scene.start('OptionsScene'); break;
+            case 3: this.scene.start('CreditsScene'); break;
         }
     }
 }

@@ -11,8 +11,7 @@ export class WinScene extends Phaser.Scene {
 
         this.cameras.main.setBackgroundColor('#000000');
 
-        this.add.bitmapText(cx, cy - 40, 'big_font', 'NIVEL COMPLETO')
-            .setOrigin(0.5, 0.5);
+        this.add.bitmapText(cx, cy - 40, 'big_font', gameManager.t('win')).setOrigin(0.5, 0.5);
 
         this.add.sprite(cx - 20, cy, 'berry_icon').setOrigin(0.5, 0.5);
         this.add.bitmapText(cx - 8, cy - 6, 'small_font', String(gameManager.berries).padStart(2, '0'));
