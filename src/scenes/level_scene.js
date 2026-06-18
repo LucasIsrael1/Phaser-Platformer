@@ -43,7 +43,7 @@ export class LevelScene extends Phaser.Scene {
         // música de fundo em loop
         this.music = this.sound.add('music', { loop: true, volume: 0.7 });
         this.gameOverMusic = this.sound.add('game_over', {volume: 0.7 });
-        this.levelClearMusic = this.sound.add('level_clear', {volume: 0.7 });
+        this.levelClearMusic = this.sound.add('victory', {volume: 0.7 });
         
         this.input.keyboard.once('keydown', () => {
             if (!this.music.isPlaying) this.music.play();

@@ -110,7 +110,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
             this.timeInAir += delta;
             if (Phaser.Input.Keyboard.JustDown(this.keys.jump)) {
-                this.scene.sound.play('jump', { volume: 0.6 });
+                this.scene.sound.play('jump', { volume: 0.3 });
                 this.setVelocityY(-jumpSpeed - Math.abs(this.body.velocity.x * speedJumpInfluence));
                 this.isJumping = true;
             }
@@ -293,11 +293,6 @@ const states = {
 
             player.scene.music.stop();
             player.scene.levelClearMusic.play();
-
-            if (player.heldItem) {
-                player.heldItem.throwItem();
-                player.heldItem = null;
-            }
         },
         update: (player, time, delta, inputDirection) => {
             if (player.hasWon) return;

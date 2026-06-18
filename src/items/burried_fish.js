@@ -18,7 +18,7 @@ export class BurriedFish extends Phaser.Physics.Arcade.Sprite {
                         player.hp++;
                         scene.events.emit('update_hearts', player.hp);
                     }
-                    scene.sound.play('fruta', { volume: 0.7 });
+                    scene.sound.play('fruta', { volume: 0.3 });
                     this.destroy();
                 });
             }
