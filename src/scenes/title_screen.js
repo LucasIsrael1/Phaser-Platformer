@@ -7,7 +7,7 @@ export class TitleScreenScene extends Phaser.Scene {
         if (!this.sound.get('music') || !this.sound.get('music').isPlaying) {
         this.sound.add('music', { loop: true, volume: 0.5 }).play();
         }
-        
+
         const gm = this.game.registry.get('game_manager');
         const t = (key) => gm.t(key);
 
@@ -56,7 +56,11 @@ export class TitleScreenScene extends Phaser.Scene {
 
     selectOption() {
         switch (this.selectedIndex) {
-            case 0: this.scene.start('TestScene'); this.scene.launch('HUDScene'); break;
+            case 0:
+                this.sound.stopAll();
+                this.scene.start('TestScene');
+                this.scene.launch('HUDScene');
+                break;
             case 1: this.scene.start('ControlsScene'); break;
             case 2: this.scene.start('OptionsScene'); break;
             case 3: this.scene.start('CreditsScene'); break;

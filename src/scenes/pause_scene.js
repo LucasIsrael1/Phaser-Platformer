@@ -16,8 +16,10 @@ export class PauseScene extends Phaser.Scene {
         this.add.bitmapText(cx, cy + 25, 'small_font', gm.t('menu')).setOrigin(0.5, 0.5);
 
         this.input.keyboard.once('keydown-P', () => {
-            this.scene.stop('PauseScene');
-            this.scene.resume('TestScene');
+        this.scene.stop('PauseScene');
+        this.scene.resume('TestScene');
+        const testScene = this.scene.get('TestScene');
+        if (testScene.music) testScene.music.resume();
         });
 
         this.input.keyboard.once('keydown-M', () => {

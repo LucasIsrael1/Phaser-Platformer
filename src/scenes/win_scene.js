@@ -16,7 +16,7 @@ export class WinScene extends Phaser.Scene {
         this.add.sprite(cx - 20, cy, 'berry_icon').setOrigin(0.5, 0.5);
         this.add.bitmapText(cx - 8, cy - 6, 'small_font', String(gameManager.berries).padStart(2, '0'));
 
-        this.add.bitmapText(cx, cy + 35, 'small_font', 'PRIMA R PARA JOGAR DE NOVO')
+        this.add.bitmapText(cx, cy + 35, 'small_font', gameManager.t('restart'))
             .setOrigin(0.5, 0.5);
 
         this.input.keyboard.once('keydown-R', () => {

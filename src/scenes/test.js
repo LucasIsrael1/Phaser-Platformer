@@ -114,12 +114,12 @@ export class TestScene extends Phaser.Scene {
 
 
     update() {
-        
-        // pausar com P
         if (Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
+            this.music.pause();
             this.scene.pause('TestScene');
             this.scene.launch('PauseScene');
         }
+        
     }
 
     playerDie() {
