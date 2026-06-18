@@ -39,12 +39,12 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         if (this.body.blocked.left) {
             this.direction = 1;
-            this.setFlipX(true);
         }
         else if (this.body.blocked.right) {
             this.direction = -1;
-            this.setFlipX(false);
         }
+
+        this.setFlipX(this.direction > 0);
     }
 
     defeat() {

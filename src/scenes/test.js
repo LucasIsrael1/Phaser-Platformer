@@ -13,7 +13,9 @@ export class TestScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.tilemapTiledJSON('tilemap', '/assets/tilemaps/test.json');
+        this.gameManager = this.game.registry.get('game_manager');
+        
+        this.load.tilemapTiledJSON('tilemap', this.gameManager.getLevelPath());
     }
 
     create() {

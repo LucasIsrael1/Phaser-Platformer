@@ -43,4 +43,14 @@ export class Turtle extends Enemy  {
             this.destroy();
         });
     }
+
+    update(time, delta) {
+        super.update(time, delta);
+
+        const canContinue = this.scene.terrain.isWalkable(this.x + this.direction * 4, this.y + 20);
+
+        if (this.body.blocked.down && !canContinue) {
+            this.direction *= -1;
+        }
+    }
 }

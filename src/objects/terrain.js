@@ -21,8 +21,21 @@ export class Terrain {
         this.height = this.tilemap.heightInPixels;
 
         this.layer.forEachTile(tile => {
-            if (tile.properties.Collision == CollisionType.NONE) tile.setCollision(false);
-        });
+            if (tile.properties.Collision == CollisionType.NONE) {
+                tile.setCollision(false);
+            }
+            else if (tile.properties.Collision == CollisionType.ONE_WAY) {
+                tile.collideUp = true;
+                tile.collideDown = false;
+                tile.collideLeft = false;
+                tile.collideRight = false;
+
+                tile.faceTop = true;
+                tile.faceBottom = false;
+                tile.faceLeft = false;
+                tile.faceRight = false;
+            }
+        })
     }
 
     setCameraBounds() {
@@ -34,7 +47,10 @@ export class Terrain {
         this.scene.physics.add.collider(object, this.layer, callback, (object, tile) => {
             switch(tile.properties.Collision) {
                 case CollisionType.ONE_WAY:
-                    return object.body.velocity.y > 0 && object.body.bottom <= tile.getTop() + 6;
+                    return (
+                        object.body.velocity.y > 0
+                        && object.body.prev.y + object.body.height <= tile.getTop() + 6
+                    );
                 case CollisionType.HURT:
                     if (object instanceof Player) {
                         if (object.invincibilityFrames > 0) return true;
@@ -51,5 +67,10 @@ export class Terrain {
 
     getObjectLayer() {
         return this.tilemap.getObjectLayer('Objects');
+    }
+
+    isWalkable(x, y) {
+        const tile = this.layer.getTileAtWorldXY(x, y);
+        return tile && tile?.properties.Collision !== CollisionType.NONE;
     }
 }
