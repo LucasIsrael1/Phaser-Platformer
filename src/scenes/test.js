@@ -36,7 +36,7 @@ export class TestScene extends Phaser.Scene {
         this.createOverlaps();
 
         // música de fundo em loop
-        this.music = this.sound.add('music', { loop: true, volume: 0.5 });
+        this.music = this.sound.add('music', { loop: true, volume: 0.8 });
         this.input.keyboard.once('keydown', () => {
             if (!this.music.isPlaying) this.music.play();
         });

@@ -7,7 +7,8 @@ export class GameOverScene extends Phaser.Scene {
         const cx = this.cameras.main.width / 2;
         const cy = this.cameras.main.height / 2;
 
-        this.sound.play('game_over', { volume: 0.8 });
+        this.music = this.sound.add('game_over', { volume: 0.8 });
+        this.music.play();
         this.cameras.main.setBackgroundColor('#111111');
 
         // Texto
@@ -29,6 +30,7 @@ export class GameOverScene extends Phaser.Scene {
         this.input.keyboard.once('keydown-R', () => {
             this.scene.stop('GameOverScene');
             this.scene.stop('HUDScene');
+            this.music.stop();
             this.scene.start('TestScene');
             this.scene.launch('HUDScene');
         });
