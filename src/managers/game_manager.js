@@ -1,6 +1,9 @@
 export class GameManager {
     berries = 0;
-    level = 1;
+    
+    level = 2;
+    levelCount = 3;
+
     lang = 'PT';
 
     constructor(scene) {

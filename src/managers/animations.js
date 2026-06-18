@@ -128,6 +128,14 @@ export default (anims) => {
         frameRate: 10,
     });
 
+    anims.create({
+        key: 'player_win',
+        frames: [
+            { key: 'player', frame: 18 },
+        ],
+        frameRate: 10,
+    });
+
     // Berry
 
     anims.create({

@@ -38,6 +38,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     knockbackDirection = 0;
 
     isDefeated = false;
+    hasWon = false;
 
     constructor(scene, x, y) {
         super(scene, x, y, 'player');
@@ -156,8 +157,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     checkOutOfBounds() {
-        if (this.y > this.scene.terrain.height - 32) {
-            this.scene.sound.play('lost_1heart', { volume: 0.7 });
+        if (this.y > this.scene.terrain.height - 16) {
             this.setState('defeat');
         }
     }
@@ -171,11 +171,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.hp -= amount;
         if (this.hp <= 0) {
-            this.scene.sound.play('lost_1heart', { volume: 0.7 });
             this.setState('defeat');
             return;
         }
-        this.scene.sound.play('lost_1heart', { volume: 0.7 });
+        this.scene.sound.play('damage', { volume: 0.7 });
         this.setState('damage');
         this.invincibilityFrames = 2000;
         this.scene.events.emit('update_hearts', this.hp);
@@ -275,10 +274,56 @@ const states = {
             player.damageTimer = 2000;
             player.visible = true;
             player.scene.events.emit('update_hearts', 0);
+
+            player.scene.music.stop();
+            player.scene.gameOverMusic.play();
         },
         update: (player, time, delta, inputDirection) => {
             player.damageTimer -= delta;
             if (player.damageTimer <= 0) player.scene.playerDie();
+        }
+    },
+    'win': {
+        enter: (player) => {
+            player.body.setVelocityX(0);
+            player.body.setAccelerationX(0);
+            player.body.setGravityY(fallGravity);
+            player.visible = true;
+
+            player.scene.music.stop();
+            player.scene.levelClearMusic.play();
+        },
+        update: (player, time, delta, inputDirection) => {
+            if (player.hasWon) return;
+
+            const distance = player.scene.cave.x - player.x;
+            if (distance < -1) {
+                player.setAccelerationX(-walkAcceleration);
+                player.anims.timeScale = 0.2 + Math.abs(player.body.velocity.x) * 0.02;
+                player.setFlipX(true);
+            }
+            else if (distance > 1) {
+                player.setAccelerationX(walkAcceleration);
+                player.anims.timeScale = 0.2 + Math.abs(player.body.velocity.x) * 0.02;
+                player.setFlipX(false);
+            } else {
+                player.setAccelerationX(0);
+                player.setVelocityX(0);
+                player.anims.play('player_win');
+                player.setFlipX(false);
+                player.hasWon = true;
+                
+                player.scene.time.delayedCall(3000, () => {
+                    player.scene.clearLevel();
+                });
+                return;
+            }
+
+            if (!player.body.blocked.down) {
+                player.anims.play('player_fall');
+            } else {
+                player.anims.play('player_walk', true);
+            }
         }
     }
 }

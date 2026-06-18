@@ -18,12 +18,16 @@
         "credits_engine": "FEITO COM PHASER 3",
         "credits_school": "ESTG. IPVC 2025/2026",
         "game_over": "FIM DE JOGO",
-        "restart": "PRIMA [R] PARA JOGAR DE NOVO.",
-        "menu": "PRIMA [M] PARA O MENU.",
+        "restart": "TENTAR DE NOVO",
+        "menu": "VOLTAR AO MENU",
         "volume": "VOLUME",
-        "win": "NIVEL COMPLETO",
+        "win": "NIVEL COMPLETO!",
+        "next_level": "PROXIMO NIVEL",
         "pause": "PAUSA",
-        "resume": "PRIMA [P] PARA CONTINUAR"
+        "resume": "CONTINUAR JOGO",
+        "congratulations": "PARABENS!",
+        "won_all_levels": "CONCLUISTE TODOS OS NIVEIS!",
+        "menu_press": "PRIMA [Z] PARA VOLTAR AO MENU"
     },
     "EN": {
         "title": "OTTER ISLAND",

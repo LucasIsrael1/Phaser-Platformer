@@ -27,9 +27,11 @@ export class LoadingScene extends Phaser.Scene {
         this.load.image('menu_bg', '/assets/bgs/menu_bg.png');
         this.load.image('cave_bg', '/assets/bgs/cave_bg.png');
 
-        this.load.audio('music', '/assets/audio/musica.mp3');
+        this.load.audio('music', '/assets/audio/music.mp3');
+        this.load.audio('title', '/assets/audio/title.ogg');
         this.load.audio('game_over', '/assets/audio/game_over.mp3');
-        this.load.audio('lost_1heart', '/assets/audio/lost_1heart.mp3');
+        this.load.audio('level_clear', '/assets/audio/level_clear.mp3');
+        this.load.audio('damage', '/assets/audio/damage.mp3');
         
         const translations = this.load.json('lang', '/assets/lang.json');
     }

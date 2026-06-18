@@ -17,7 +17,7 @@ export class Terrain {
     constructor(scene, key) {
         this.scene = scene;
 
-        this.tilemap = scene.add.tilemap('tilemap');
+        this.tilemap = scene.add.tilemap(scene.levelKey);
         const tilesetImage = this.tilemap.addTilesetImage(key, 'tiles');
 
         this.layer = this.tilemap.createLayer('Terrain', tilesetImage, 0, 0);
@@ -34,8 +34,8 @@ export class Terrain {
     }
 
     setCameraBounds() {
-        this.scene.cameras.main.setBounds(16, 16, this.width - 32, this.height - 32);
-        this.scene.physics.world.setBounds(16, 16, this.width - 32, this.height - 32);
+        this.scene.cameras.main.setBounds(0, 16, this.width, this.height - 32);
+        this.scene.physics.world.setBounds(0, 0, this.width, this.height);
     }
 
     addCollider(object, callback = null) {

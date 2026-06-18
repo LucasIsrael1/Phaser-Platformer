@@ -6,8 +6,12 @@ export class TitleScreenScene extends Phaser.Scene {
     }
 
     create() {
-        if (!this.sound.get('music') || !this.sound.get('music').isPlaying) {
-            this.sound.add('music', { loop: true, volume: 0.5 }).play();
+        let titleMusic = this.sound.getAll('title')[0];
+        if (!titleMusic) {
+            titleMusic = this.sound.add('title', { loop: true, volume: 0.5 });
+            titleMusic.play();
+        } else if (!titleMusic.isPlaying) {
+            titleMusic.play();
         }
 
         const gm = this.game.registry.get('game_manager');

@@ -1,3 +1,5 @@
+import { MenuManager } from '/src/managers/menu_manager.js';
+
 export class GameOverScene extends Phaser.Scene {
     constructor() {
         super({ key: 'GameOverScene' });
@@ -7,42 +9,44 @@ export class GameOverScene extends Phaser.Scene {
         const cx = this.cameras.main.width / 2;
         const cy = this.cameras.main.height / 2;
 
-        this.music = this.sound.add('game_over', { volume: 0.8 });
-        this.music.play();
-        this.cameras.main.setBackgroundColor('#111111');
+        this.add.image(cx, 90, 'cave_bg').setOrigin(0.5, 0.5).setDepth(0);
 
         // Texto
         const gm = this.game.registry.get('game_manager');
         this.add.bitmapText(cx, cy - 40, 'big_font', gm.t('game_over')).setOrigin(0.5, 0.5);
 
-        // // Ícone berry + score
-        // this.add.sprite(cx - 30, cy, 'berry').setOrigin(0.5, 0.5).anims.play('berry');
-        // this.add.text(cx - 18, cy, 'x' + this.finalScore, {
-        //     fontSize: '12px',
-        //     fill: '#ffffff',
-        //     fontFamily: 'monospace',
-        //     stroke: '#000000',
-        //     strokeThickness: 3
-        // }).setOrigin(0, 0.5);
+        const restartText = this.add.bitmapText(cx, cy, 'small_font', gm.t('restart')).setOrigin(0.5, 0.5);
+        const menuText = this.add.bitmapText(cx, cy + 20, 'small_font', gm.t('menu')).setOrigin(0.5, 0.5);
 
-        this.add.bitmapText(cx, cy + 35, 'small_font', gm.t('restart')).setOrigin(0.5, 0.5);
-        this.add.bitmapText(cx, cy + 50, 'small_font', gm.t('menu')).setOrigin(0.5, 0.5);
+        const menuItemsConfig = [
+            // Reiniciar
+            {
+                onSelect: () => {
+                    this.sound.stopAll();
 
-        // Input para voltar ao menu
-        this.input.keyboard.once('keydown-M', () => {
-            this.scene.stop('GameOverScene');
-            this.scene.stop('HUDScene');
-            this.music.stop();
-            this.scene.start('TitleScreenScene');
-        });
+                    this.scene.stop('GameOverScene');
+                    this.scene.stop('HUDScene');
+                    
+                    this.scene.start('LevelScene');
+                    this.scene.launch('HUDScene');
+                },
+                getLabel: () => gm.t('restart'),
+                text: restartText
+            },
+            // Voltar ao menu
+            {
+                onSelect: () => {
+                    this.sound.stopAll();
 
-        // Input para reiniciar
-        this.input.keyboard.once('keydown-R', () => {
-            this.scene.stop('GameOverScene');
-            this.scene.stop('HUDScene');
-            this.music.stop();
-            this.scene.start('LevelScene');
-            this.scene.launch('HUDScene');
-        });
+                    this.scene.stop('GameOverScene');
+                    this.scene.stop('HUDScene');                   
+                    this.scene.start('TitleScreenScene');
+                },
+                getLabel: () => gm.t('menu'),
+                text: menuText
+            }
+        ];
+
+        this.menu = new MenuManager(this, menuItemsConfig);
     }
 }

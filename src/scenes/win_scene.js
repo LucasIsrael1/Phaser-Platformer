@@ -1,28 +1,55 @@
+import { MenuManager } from '/src/managers/menu_manager.js';
+
 export class WinScene extends Phaser.Scene {
     constructor() {
         super({ key: 'WinScene' });
     }
 
     create() {
-        const gameManager = this.game.registry.get('game_manager');
-
         const cx = this.cameras.main.width / 2;
         const cy = this.cameras.main.height / 2;
 
-        this.cameras.main.setBackgroundColor('#000000');
+        this.add.image(cx, 90, 'cave_bg').setOrigin(0.5, 0.5).setDepth(0);
 
-        this.add.bitmapText(cx, cy - 40, 'big_font', gameManager.t('win')).setOrigin(0.5, 0.5);
+        // Texto
+        const gm = this.game.registry.get('game_manager');
+        this.add.bitmapText(cx, cy - 40, 'big_font', gm.t('win')).setOrigin(0.5, 0.5);
 
-        this.add.sprite(cx - 20, cy, 'berry_icon').setOrigin(0.5, 0.5);
-        this.add.bitmapText(cx - 8, cy - 6, 'small_font', String(gameManager.berries).padStart(2, '0'));
+        const nextLevelText = this.add.bitmapText(cx, cy, 'small_font', gm.t('next_level')).setOrigin(0.5, 0.5);
+        const menuText = this.add.bitmapText(cx, cy + 20, 'small_font', gm.t('menu')).setOrigin(0.5, 0.5);
 
-        this.add.bitmapText(cx, cy + 35, 'small_font', gameManager.t('restart'))
-            .setOrigin(0.5, 0.5);
+        const menuItemsConfig = [
+            // Próximo nível
+            {
+                onSelect: () => {
+                    this.scene.stop('WinScene');
+                    this.scene.stop('HUDScene');
 
-        this.input.keyboard.once('keydown-R', () => {
-            this.scene.stop('WinScene');
-            this.scene.start('LevelScene');
-            this.scene.launch('HUDScene');
-        });
+                    gm.level += 1;
+                    
+                    if (gm.level > gm.levelCount) {
+                        this.scene.start('WinScene');
+                        return;
+                    } 
+                    
+                    this.scene.start('LevelScene');
+                    this.scene.launch('HUDScene');
+                },
+                getLabel: () => gm.t('next_level'),
+                text: nextLevelText
+            },
+            // Voltar ao menu
+            {
+                onSelect: () => {
+                    this.scene.stop('WinScene');
+                    this.scene.stop('HUDScene');                   
+                    this.scene.start('TitleScreenScene');
+                },
+                getLabel: () => gm.t('menu'),
+                text: menuText
+            }
+        ];
+
+        this.menu = new MenuManager(this, menuItemsConfig);
     }
 }

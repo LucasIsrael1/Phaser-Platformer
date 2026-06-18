@@ -13,9 +13,10 @@ export class LevelScene extends Phaser.Scene {
     }
 
     preload() {
-        this.gameManager = this.game.registry.get('game_manager');
-        
-        this.load.tilemapTiledJSON('tilemap', this.gameManager.getLevelPath());
+        this.gm = this.game.registry.get('game_manager');
+        this.levelKey = 'tilemap' + this.gm.level;
+
+        this.load.tilemapTiledJSON(this.levelKey, this.gm.getLevelPath());
     }
 
     create() {
@@ -38,7 +39,10 @@ export class LevelScene extends Phaser.Scene {
         this.createOverlaps();
 
         // música de fundo em loop
-        this.music = this.sound.add('music', { loop: true, volume: 0.8 });
+        this.music = this.sound.add('music', { loop: true, volume: 0.7 });
+        this.gameOverMusic = this.sound.add('game_over', {volume: 0.7 });
+        this.levelClearMusic = this.sound.add('level_clear', {volume: 0.7 });
+        
         this.input.keyboard.once('keydown', () => {
             if (!this.music.isPlaying) this.music.play();
         });
@@ -81,9 +85,9 @@ export class LevelScene extends Phaser.Scene {
                     this.player.setPosition(object.x, object.y - 4);
                     break;
                 case 'Cave':
-                    const cave = this.physics.add.staticImage(object.x, object.y - 7, 'cave');
-                    this.add.existing(cave);
-                    this.physics.add.overlap(this.player, cave, () => this.enterCave(), null, this);
+                    this.cave = this.physics.add.staticImage(object.x, object.y - 7, 'cave');
+                    this.add.existing(this.cave);
+                    this.physics.add.overlap(this.player, this.cave, (player, cave) => player.setState('win'), null, this);
                     break;
             }
         });
@@ -123,17 +127,20 @@ export class LevelScene extends Phaser.Scene {
     }
 
     playerDie() {
-        const gameManager = this.game.registry.get('game_manager');
-        this.scene.launch('GameOverScene', { score: gameManager.berries });
-        this.music.stop();
+        this.scene.launch('GameOverScene');
         this.scene.stop();
         return;
     }
-
-    enterCave() {
-        this.music.stop();
+    
+    clearLevel() {
         this.scene.stop('HUDScene');
-        this.scene.launch('WinScene');
+
+        if (this.gm.level >= this.gm.levelCount) {
+            this.scene.launch('EndScene');
+        } else {
+            this.scene.launch('WinScene');
+        }
+
         this.scene.stop();
     }
 }
