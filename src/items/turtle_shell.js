@@ -19,4 +19,10 @@ export class TurtleShell extends Projectile  {
         newTurtle.setPhysics();
         this.destroy();
     }
+
+    onHitEnemy(enemy) {
+        if (this.state !== ProjectileState.THROWN) return;
+        enemy.defeat();
+        this.destroy();
+    }
 }   

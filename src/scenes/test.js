@@ -94,6 +94,9 @@ export class TestScene extends Phaser.Scene {
 
         // pedras a atingir inimigos
         this.physics.add.overlap(this.rocks, this.enemies, (rock, enemy) => rock.onHitEnemy(enemy), null, this);
+
+        // tartarugas a atingir inimigos
+        this.physics.add.overlap(this.projectiles, this.enemies, (projectile, enemy) => projectile.onHitEnemy(enemy), null, this);
     }
 
 
