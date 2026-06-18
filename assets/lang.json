@@ -27,7 +27,9 @@
         "resume": "CONTINUAR JOGO",
         "congratulations": "PARABENS!",
         "won_all_levels": "CONCLUISTE TODOS OS NIVEIS!",
-        "menu_press": "PRIMA [Z] PARA VOLTAR AO MENU"
+        "menu_press": "PRIMA [Z] PARA VOLTAR AO MENU",
+        "select_level": "ESCOLHER NIVEL", 
+        "level": "NIVEL"
     },
     "EN": {
         "title": "OTTER ISLAND",
@@ -48,12 +50,18 @@
         "credits_engine": "MADE WITH PHASER 3",
         "credits_school": "ESTG. IPVC 2025/2026",
         "game_over": "GAME OVER",
-        "restart": "PRESS [R] TO PLAY AGAIN.",
-        "menu": "PRESS [M] FOR MENU.",
+        "restart": "TRY AGAIN",
+        "menu": "BACK TO MENU",
         "volume": "VOLUME",
-        "win": "LEVEL COMPLETE",
+        "win": "LEVEL COMPLETE!",
+        "next_level": "NEXT LEVEL",
         "pause": "PAUSE",
-        "resume": "PRESS [P] TO CONTINUE"
+        "resume": "RESUME GAME",
+        "congratulations": "CONGRATULATIONS!",
+        "won_all_levels": "YOU COMPLETED ALL LEVELS!",
+        "menu_press": "PRESS [Z] TO RETURN TO MENU",
+        "select_level": "SELECT LEVEL",
+        "level": "LEVEL"
     },
     "ES": {
         "title": "OTTER ISLAND",
@@ -74,12 +82,18 @@
         "credits_engine": "HECHO CON PHASER 3",
         "credits_school": "ESTG. IPVC 2025/2026",
         "game_over": "FIN DEL JUEGO",
-        "restart": "PULSA [R] PARA JUGAR DE NUEVO.",
-        "menu": "PULSA [M] PARA O MENU.",
+        "restart": "INTENTAR DE NUEVO",
+        "menu": "VOLVER AL MENU",
         "volume": "VOLUMEN",
-        "win": "NIVEL COMPLETADO",
+        "win": "NIVEL COMPLETADO!",
+        "next_level": "PROXIMO NIVEL",
         "pause": "PAUSA",
-        "resume": "PULSA [P] PARA CONTINUAR"
+        "resume": "CONTINUAR JUEGO",
+        "congratulations": "FELICIDADES!",
+        "won_all_levels": "HAS COMPLETADO TODOS LOS NIVELES!",
+        "menu_press": "PULSA [Z] PARA VOLVER AL MENU",
+        "select_level": "SELECCIONAR NIVEL",
+        "level": "NIVEL"
     },
     "FR": {
         "title": "OTTER ISLAND",
@@ -100,11 +114,17 @@
         "credits_engine": "FAIT AVEC PHASER 3",
         "credits_school": "ESTG. IPVC 2025/2026",
         "game_over": "FIN DE LA PARTIE",
-        "restart": "APPUIE SUR [R] POUR REJOUER.",
-        "menu": "APPUIE SUR [M] POUR LE MENU.",
+        "restart": "REESSAYER",
+        "menu": "RETOUR AU MENU",
         "volume": "VOLUME",
-        "win": "NIVEAU TERMINE",
+        "win": "NIVEAU TERMINE!",
+        "next_level": "NIVEAU SUIVANT",
         "pause": "PAUSE",
-        "resume": "APPUIE SUR [P] POUR CONTINUER"
+        "resume": "CONTINUER LE JEU",
+        "congratulations": "FELICITATIONS!",
+        "won_all_levels": "TU AS TERMINE TOUS LES NIVEAUX!",
+        "menu_press": "APPUIE SUR [Z] POUR REVENIR AU MENU",
+        "select_level": "CHOISIR NIVEAU",
+        "level": "NIVEAU"
     }
 }

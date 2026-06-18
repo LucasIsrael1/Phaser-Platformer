@@ -40,8 +40,7 @@ export class TitleScreenScene extends Phaser.Scene {
     selectOption(index) {
         switch (index) {
             case 0:
-                this.sound.stopAll();
-                this.scene.start('LevelScene');
+                this.scene.start('LevelSelectScene');
                 this.scene.launch('HUDScene');
                 break;
 

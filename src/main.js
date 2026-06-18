@@ -2,6 +2,7 @@ import { LevelScene } from '/src/scenes/level_scene.js';
 import { HUDScene } from "/src/scenes/hud.js";
 import { GameOverScene } from "/src/scenes/game_over.js";
 import { TitleScreenScene } from '/src/scenes/title_screen.js';
+import { LevelSelectScene } from '/src/scenes/level_select_scene.js';
 import { LoadingScene } from '/src/scenes/loading_scene.js';
 import { GameManager } from '/src/managers/game_manager.js';
 import { PauseScene } from '/src/scenes/pause_scene.js';
@@ -16,7 +17,7 @@ const config = {
     width: 320,
     height: 180,
     scene: [
-        LoadingScene, TitleScreenScene, LevelScene, HUDScene, GameOverScene, PauseScene, WinScene, EndScene, ControlsScene, OptionsScene, CreditsScene],
+        LoadingScene, TitleScreenScene, LevelSelectScene, LevelScene, HUDScene, GameOverScene, PauseScene, WinScene, EndScene, ControlsScene, OptionsScene, CreditsScene],
     backgroundColor: '#88838b',
     physics: {
         default: 'arcade',
