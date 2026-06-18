@@ -1,4 +1,4 @@
-const cameraRange = 200;
+const cameraRange = 100;
 
 export class Enemy extends Phaser.Physics.Arcade.Sprite {
 

@@ -292,6 +292,11 @@ const states = {
 
             player.scene.music.stop();
             player.scene.levelClearMusic.play();
+
+            if (player.heldItem) {
+                player.heldItem.throwItem();
+                player.heldItem = null;
+            }
         },
         update: (player, time, delta, inputDirection) => {
             if (player.hasWon) return;
