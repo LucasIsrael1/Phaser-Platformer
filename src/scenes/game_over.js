@@ -26,6 +26,15 @@ export class GameOverScene extends Phaser.Scene {
         // }).setOrigin(0, 0.5);
 
         this.add.bitmapText(cx, cy + 35, 'small_font', gm.t('restart')).setOrigin(0.5, 0.5);
+        this.add.bitmapText(cx, cy + 50, 'small_font', gm.t('menu')).setOrigin(0.5, 0.5);
+
+        // Input para voltar ao menu
+        this.input.keyboard.once('keydown-M', () => {
+            this.scene.stop('GameOverScene');
+            this.scene.stop('HUDScene');
+            this.music.stop();
+            this.scene.start('TitleScreenScene');
+        });
 
         // Input para reiniciar
         this.input.keyboard.once('keydown-R', () => {
