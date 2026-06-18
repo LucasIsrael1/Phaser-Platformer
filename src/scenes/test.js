@@ -29,6 +29,12 @@ export class TestScene extends Phaser.Scene {
         this.loadObjects();
         this.createOverlaps();
 
+        // música de fundo em loop
+        this.music = this.sound.add('music', { loop: true, volume: 0.5 });
+        this.input.keyboard.once('keydown', () => {
+            if (!this.music.isPlaying) this.music.play();
+        });
+
         this.scene.launch('HUDScene');
     }
 
@@ -111,6 +117,7 @@ export class TestScene extends Phaser.Scene {
 
         const gameManager = this.game.registry.get('game_manager');
         this.scene.launch('GameOverScene', { score: gameManager.berries });
+        this.music.stop();
         this.scene.stop();
         return;
     }

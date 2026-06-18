@@ -7,6 +7,7 @@ export class GameOverScene extends Phaser.Scene {
         const cx = this.cameras.main.width / 2;
         const cy = this.cameras.main.height / 2;
 
+        this.sound.play('game_over', { volume: 0.8 });
         this.cameras.main.setBackgroundColor('#111111');
 
         // Texto

@@ -20,9 +20,13 @@ export class LoadingScene extends Phaser.Scene {
 
         this.load.image('font_small_image', '/assets/fonts/small.png');
         this.load.image('font_big_image', '/assets/fonts/big.png');
-
         this.load.image('berry_icon', '/assets/sprites/berry_icon.png');
+        
         this.load.spritesheet('heart', '/assets/sprites/heart.png', {frameWidth: 16, frameHeight: 16});
+
+        this.load.audio('music', '/assets/audio/musica.mp3');
+        this.load.audio('game_over', '/assets/audio/game_over.mp3');
+        this.load.audio('lost_1heart', '/assets/audio/lost_1heart.mp3');
     }
 
     create() {

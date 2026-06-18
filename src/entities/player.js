@@ -169,9 +169,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.hp -= amount;
         if (this.hp <= 0) {
+            this.scene.sound.play('lost_1heart', { volume: 0.7 });
             this.setState('defeat');
             return;
         }
+        this.scene.sound.play('lost_1heart', { volume: 0.7 });
         this.setState('damage');
         this.invincibilityFrames = 2000;
         this.scene.events.emit('update_hearts', this.hp);
