@@ -12,7 +12,7 @@ export class GameManager {
     }
 
     t(key) {
-        return translations[this.lang]?.[key] || translations['PT'][key] || key;
+        return this.translations[this.lang]?.[key] || this.translations['PT'][key] || key;
     }
 }
 
