@@ -83,6 +83,8 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite  {
         this.body.velocity.x = this.holder.facingDirection * 100 + this.holder.body.velocity.x * 0.75;
         this.body.velocity.y = -100 + this.holder.body.velocity.y * 0.5;
 
+        this.scene.sound.play('throw', { volume: 0.6 });
+
         this.spawnThrowParticles();
 
         this.holder = null;

@@ -32,6 +32,10 @@ export class LoadingScene extends Phaser.Scene {
         this.load.audio('game_over', '/assets/audio/game_over.mp3');
         this.load.audio('level_clear', '/assets/audio/level_clear.mp3');
         this.load.audio('damage', '/assets/audio/damage.mp3');
+        this.load.audio('jump', '/assets/audio/jump.mp3');
+        this.load.audio('fruta', '/assets/audio/fruta.mp3');
+        this.load.audio('throw', '/assets/audio/throw.mp3');
+        this.load.audio('victory', '/assets/audio/victory.mp3');
         
         const translations = this.load.json('lang', '/assets/lang.json');
     }
