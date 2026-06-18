@@ -9,7 +9,7 @@ export class OptionsScene extends Phaser.Scene {
         this.add.bitmapText(cx, 20, 'big_font', gm.t('options')).setOrigin(0.5, 0.5);
         this.add.bitmapText(cx, 60, 'small_font', gm.t('lang_label')).setOrigin(0.5, 0.5);
 
-        this.langs = ['PT', 'EN'];
+        this.langs = ['PT', 'EN', 'ES', 'FR'];
         this.langIndex = this.langs.indexOf(gm.lang);
         this.langTexts = [];
 
