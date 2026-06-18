@@ -21,7 +21,7 @@ export class WinScene extends Phaser.Scene {
 
         this.input.keyboard.once('keydown-R', () => {
             this.scene.stop('WinScene');
-            this.scene.start('TestScene');
+            this.scene.start('LevelScene');
             this.scene.launch('HUDScene');
         });
     }

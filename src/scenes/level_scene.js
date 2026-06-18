@@ -7,9 +7,9 @@ import { Berry } from '/src/items/berry.js';
 import { Rock } from '/src/items/rock.js';
 import { BurriedItem, ItemType } from '/src/objects/burried_item.js';
 
-export class TestScene extends Phaser.Scene {
+export class LevelScene extends Phaser.Scene {
     constructor() {
-        super('TestScene');
+        super('LevelScene');
     }
 
     preload() {
@@ -116,7 +116,7 @@ export class TestScene extends Phaser.Scene {
     update() {
         if (Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
             this.music.pause();
-            this.scene.pause('TestScene');
+            this.scene.pause('LevelScene');
             this.scene.launch('PauseScene');
         }
         

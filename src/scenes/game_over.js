@@ -41,7 +41,7 @@ export class GameOverScene extends Phaser.Scene {
             this.scene.stop('GameOverScene');
             this.scene.stop('HUDScene');
             this.music.stop();
-            this.scene.start('TestScene');
+            this.scene.start('LevelScene');
             this.scene.launch('HUDScene');
         });
     }

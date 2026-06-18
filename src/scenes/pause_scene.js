@@ -17,15 +17,15 @@ export class PauseScene extends Phaser.Scene {
 
         this.input.keyboard.once('keydown-P', () => {
         this.scene.stop('PauseScene');
-        this.scene.resume('TestScene');
-        const testScene = this.scene.get('TestScene');
-        if (testScene.music) testScene.music.resume();
+        this.scene.resume('LevelScene');
+        const LevelScene = this.scene.get('LevelScene');
+        if (LevelScene.music) LevelScene.music.resume();
         });
 
         this.input.keyboard.once('keydown-M', () => {
             this.scene.stop('PauseScene');
             this.scene.stop('HUDScene');
-            this.scene.stop('TestScene');
+            this.scene.stop('LevelScene');
             this.scene.start('TitleScreenScene');
         });
     }

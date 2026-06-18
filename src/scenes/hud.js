@@ -22,7 +22,7 @@ export class HUDScene extends Phaser.Scene {
         ]
 
         // Remover listeners antigos antes de adicionar novos
-        const gameScene = this.scene.get('TestScene');
+        const gameScene = this.scene.get('LevelScene');
         gameScene.events.off('update_berries');
         gameScene.events.off('update_hearts');
 
