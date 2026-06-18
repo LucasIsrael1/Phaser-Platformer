@@ -4,7 +4,7 @@ import { TurtleShell } from "/src/items/turtle_shell.js";
 export class Turtle extends Enemy  {
     
     constructor(scene, x, y) {
-        super(scene, x, y, 'turtle', 20, {x: 5, y: 10, w: 16, h: 14});
+        super(scene, x, y, 'turtle', 30, {x: 5, y: 10, w: 16, h: 14});
 
         this.anims.play('turtle_move');
     }

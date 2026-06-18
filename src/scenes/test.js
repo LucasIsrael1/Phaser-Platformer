@@ -41,12 +41,6 @@ export class TestScene extends Phaser.Scene {
             if (!this.music.isPlaying) this.music.play();
         });
 
-        // gruta no fim do mapa
-        this.cave = this.add.image(1528, 272, 'cave').setDepth(5);
-        this.caveBody = this.physics.add.staticImage(1528, 272, 'cave');
-        this.caveBody.setVisible(false);
-        this.physics.add.overlap(this.player, this.caveBody, () => this.enterCave(), null, this);
-
         this.scene.launch('HUDScene');
     }
 
@@ -71,9 +65,6 @@ export class TestScene extends Phaser.Scene {
                 case 'Berry':
                     this.berries.create(object.x, object.y);
                     break;
-                case 'SpawnPoint':
-                    this.player.setPosition(object.x, object.y - 4);
-                    break;
                 case 'BurriedItem':
                     this.burriedItems.create(object.x, object.y + 5, object.properties[0].value);
                     break;
@@ -86,6 +77,14 @@ export class TestScene extends Phaser.Scene {
                     const turtle = new Turtle(this, object.x, object.y - 3);
                     this.enemies.add(turtle);
                     turtle.setPhysics();
+                    break;
+                case 'SpawnPoint':
+                    this.player.setPosition(object.x, object.y - 4);
+                    break;
+                case 'EndCave':
+                    const cave = this.physics.add.staticImage(object.x, object.y - 7, 'cave');
+                    this.add.existing(cave);
+                    this.physics.add.overlap(this.player, cave, () => this.enterCave(), null, this);
                     break;
             }
         });
@@ -125,14 +124,6 @@ export class TestScene extends Phaser.Scene {
     }
 
     playerDie() {
-        // this.player.lives--;
-        // this.events.emit('updateLives', this.player.lives);
-
-
-        // this.scene.stop('HUDScene');
-        // const hudScene = this.scene.get('HUDScene');
-        // const score = hudScene ? hudScene.berryCount : 0;
-
         const gameManager = this.game.registry.get('game_manager');
         this.scene.launch('GameOverScene', { score: gameManager.berries });
         this.music.stop();
@@ -141,10 +132,9 @@ export class TestScene extends Phaser.Scene {
     }
 
     enterCave() {
-        const gameManager = this.game.registry.get('game_manager');
         this.music.stop();
         this.scene.stop('HUDScene');
-        this.scene.launch('WinScene', { score: gameManager.berries });
+        this.scene.launch('WinScene');
         this.scene.stop();
     }
 }
