@@ -4,6 +4,10 @@ export class TitleScreenScene extends Phaser.Scene {
     }
 
     create() {
+        if (!this.sound.get('music') || !this.sound.get('music').isPlaying) {
+        this.sound.add('music', { loop: true, volume: 0.5 }).play();
+        }
+        
         const gm = this.game.registry.get('game_manager');
         const t = (key) => gm.t(key);
 
