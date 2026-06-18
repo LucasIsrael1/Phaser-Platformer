@@ -7,6 +7,12 @@ export const CollisionType = {
     HURT: 3,
 }
 
+const skyColors = [
+    '#779BFF',
+    '#350900',
+    '#FFDCB2',
+];
+
 export class Terrain {
     constructor(scene, key) {
         this.scene = scene;
@@ -56,6 +62,10 @@ export class Terrain {
 
     getObjectLayer() {
         return this.tilemap.getObjectLayer('Objects');
+    }
+
+    getSkyColor() {
+        return skyColors[this.tilemap.properties[0].value]
     }
 
     isWalkable(x, y) {
