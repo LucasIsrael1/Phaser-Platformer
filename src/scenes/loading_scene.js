@@ -27,7 +27,7 @@ export class LoadingScene extends Phaser.Scene {
         this.load.image('menu_bg', '/assets/bgs/menu_bg.png');
         this.load.image('cave_bg', '/assets/bgs/cave_bg.png');
 
-        this.load.audio('music', '/assets/audio/music.mp3');
+        this.load.audio('music', '/assets/audio/music.ogg');
         this.load.audio('title', '/assets/audio/title.ogg');
         this.load.audio('game_over', '/assets/audio/game_over.mp3');
         this.load.audio('level_clear', '/assets/audio/level_clear.mp3');
