@@ -1,7 +1,7 @@
 export class GameManager {
     
     berries = 0;
-    level = 1;
+    level = 2;
 
     constructor(scene) {
         this.scene = scene;
@@ -9,5 +9,6 @@ export class GameManager {
 
     getLevelPath() {
         return '/assets/levels/level' + this.level  + '.json';
+        // return '/assets/tilemaps/test.json'
     }
 }
