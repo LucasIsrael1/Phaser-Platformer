@@ -13,6 +13,7 @@ export class LoadingScene extends Phaser.Scene {
         this.load.image('burried_item', '/assets/sprites/burried_item.png');
         this.load.image('fish', '/assets/sprites/fish.png');
         this.load.image('psychic', '/assets/sprites/psychic.png');
+        this.load.image('menu_bg', '/assets/sprites/menu_bg.png');
         
 
         this.load.spritesheet('crab', '/assets/sprites/crab.png', {frameWidth: 24, frameHeight: 24});
@@ -31,6 +32,7 @@ export class LoadingScene extends Phaser.Scene {
     }
 
     create() {
+        this.add.image(160, 90, 'menu_bg').setOrigin(0.5, 0.5);
         this.cameras.main.setBackgroundColor('#000000');
 
         this.cache.bitmapFont.add('small_font', Phaser.GameObjects.RetroFont.Parse(this, {
@@ -43,6 +45,6 @@ export class LoadingScene extends Phaser.Scene {
         }));
         createAnimations(this.anims);
 
-        this.scene.start('TestScene');
+        this.scene.start('TitleScreenScene');
     }
 }
