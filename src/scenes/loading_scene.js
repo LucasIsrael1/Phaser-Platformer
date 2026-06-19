@@ -35,13 +35,13 @@ export class LoadingScene extends Phaser.Scene {
 
         this.load.audio('music', './assets/audio/music.ogg');
         this.load.audio('title', './assets/audio/title.ogg');
-        this.load.audio('game_over', './assets/audio/game_over.mp3');
+        this.load.audio('game_over', './assets/audio/game_over.ogg');
 
         this.load.audio('damage', './assets/audio/damage.ogg');
-        this.load.audio('jump', './assets/audio/jump.mp3');
-        this.load.audio('fruta', './assets/audio/fruta.mp3');
-        this.load.audio('throw', './assets/audio/throw.mp3');
-        this.load.audio('victory', './assets/audio/victory.mp3');
+        this.load.audio('jump', './assets/audio/jump.ogg');
+        this.load.audio('berry', './assets/audio/berry.ogg');
+        this.load.audio('throw', './assets/audio/throw.ogg');
+        this.load.audio('victory', './assets/audio/victory.ogg');
         
         const translations = this.load.json('lang', './assets/lang.json');
     }
