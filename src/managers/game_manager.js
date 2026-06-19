@@ -1,7 +1,8 @@
 export class GameManager {
     berries = 0;
+    hp = 3;
     
-    level = 2;
+    level = 1;
     levelCount = 3;
 
     lang = 'PT';

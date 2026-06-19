@@ -14,9 +14,6 @@ const jumpGravity = 50;
 const fallGravity = 150;
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
-
-    hp = 3;
-    
     movingSpeed = 80;
     isRunning = false;
 
@@ -159,6 +156,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     checkOutOfBounds() {
         if (this.y > this.scene.terrain.height - 16) {
+            this.scene.gm.hp = 0;
             this.setState('defeat');
         }
     }
@@ -170,15 +168,15 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     damage(amount) {
         if (this.invincibilityFrames > 0) return;
 
-        this.hp -= amount;
-        if (this.hp <= 0) {
+        this.scene.gm.hp -= amount;
+        if (this.scene.gm.hp <= 0) {
             this.setState('defeat');
             return;
         }
         this.scene.sound.play('damage', { volume: 0.7 });
         this.setState('damage');
         this.invincibilityFrames = 2000;
-        this.scene.events.emit('update_hearts', this.hp);
+        this.scene.events.emit('update_hearts', this.scene.gm.hp);
     }
 
     updateAnimations(inputDirection, delta) {

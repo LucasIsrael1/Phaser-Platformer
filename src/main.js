@@ -18,7 +18,7 @@ const config = {
     height: 180,
     scene: [
         LoadingScene, TitleScreenScene, LevelSelectScene, LevelScene, HUDScene, GameOverScene, PauseScene, WinScene, EndScene, ControlsScene, OptionsScene, CreditsScene],
-    backgroundColor: '#88838b',
+    backgroundColor: '#000',
     physics: {
         default: 'arcade',
         arcade: {
