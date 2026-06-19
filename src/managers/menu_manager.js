@@ -16,6 +16,7 @@ export class MenuManager {
             left: Phaser.Input.Keyboard.KeyCodes.LEFT,
             right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
             confirm: Phaser.Input.Keyboard.KeyCodes.Z,
+            confirmEnter: Phaser.Input.Keyboard.KeyCodes.ENTER,
             cancel: Phaser.Input.Keyboard.KeyCodes.X,
         });
 
@@ -28,6 +29,7 @@ export class MenuManager {
 
         // Seleção
         this.keys.confirm.on('down', () => { this.select() });
+        this.keys.confirmEnter.on('down', () => { this.select() });
     }
 
     navigate(direction) {
