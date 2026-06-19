@@ -14,8 +14,7 @@ export class BurriedBerry extends Phaser.Physics.Arcade.Sprite {
 
             onComplete: () => {
                 this.scene.time.delayedCall(100, () => {
-                    const gameManager = this.scene.registry.get('game_manager');
-                    this.scene.events.emit('update_berries', ++gameManager.berries);
+                    this.scene.events.emit('update_berries', ++this.scene.gm.berries);
                     this.scene.sound.play('fruta', { volume: 0.3 });
                     this.destroy();
                 });

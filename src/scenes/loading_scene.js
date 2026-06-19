@@ -47,8 +47,8 @@ export class LoadingScene extends Phaser.Scene {
     }
 
     create() {
-        this.gameManager = this.game.registry.get('game_manager');
-        this.gameManager.translations = this.cache.json.get('lang');
+        this.gm = this.game.registry.get('game_manager');
+        this.gm.translations = this.cache.json.get('lang');
 
         this.add.image(160, 90, 'menu_bg').setOrigin(0.5, 0.5);
         this.cameras.main.setBackgroundColor('#000000');

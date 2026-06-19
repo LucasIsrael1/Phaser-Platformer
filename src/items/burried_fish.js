@@ -12,11 +12,9 @@ export class BurriedFish extends Phaser.Physics.Arcade.Sprite {
             duration: 500,
             onComplete: () => {
                 scene.time.delayedCall(100, () => {
-                    const gameManager = scene.registry.get('game_manager');
-                    const player = scene.player;
-                    if (player.hp < 3) {
-                        player.hp++;
-                        scene.events.emit('update_hearts', player.hp);
+                    if (this.scene.gm.hp < 3) {
+                        this.scene.gm.hp++;
+                        scene.events.emit('update_hearts', this.scene.gm.hp);
                     }
                     scene.sound.play('fruta', { volume: 0.3 });
                     this.destroy();

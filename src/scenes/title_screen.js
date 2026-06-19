@@ -41,7 +41,6 @@ export class TitleScreenScene extends Phaser.Scene {
         switch (index) {
             case 0:
                 this.scene.start('LevelSelectScene');
-                this.scene.launch('HUDScene');
                 break;
 
             case 1:

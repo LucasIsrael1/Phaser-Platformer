@@ -62,6 +62,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.body.setAllowGravity(true);
         this.setFlipY(true);
         this.isDefeated = true;
+        this.scene.sound.play('damage', { volume: 0.7 });
         this.scene.time.delayedCall(600, () => {
             this.destroy();
         });

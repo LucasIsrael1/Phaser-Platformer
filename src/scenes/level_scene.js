@@ -22,13 +22,12 @@ export class LevelScene extends Phaser.Scene {
     create() {
         // resetar game manager ao iniciar
         const gm = this.game.registry.get('game_manager');
-        if (gm) gm.berries = 0;
+
+        if (this.gm.hp <= 0) this.gm.hp = 3;
 
         this.terrain = new Terrain(this, 'Terrain');
         this.terrain.setCameraBounds();
-        this.terrain.setBackground()
-
-        
+        this.terrain.setBackground();
 
         this.player = new Player(this, 0, 0);
         this.add.existing(this.player);
