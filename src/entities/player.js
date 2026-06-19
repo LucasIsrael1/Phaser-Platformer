@@ -57,6 +57,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             left: Phaser.Input.Keyboard.KeyCodes.LEFT,
             right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
             jump: Phaser.Input.Keyboard.KeyCodes.Z,
+            jumpSpace: Phaser.Input.Keyboard.KeyCodes.SPACE,
+            jumpUp: Phaser.Input.Keyboard.KeyCodes.UP,
             run: Phaser.Input.Keyboard.KeyCodes.X,
             item: Phaser.Input.Keyboard.KeyCodes.A,
         });
@@ -109,14 +111,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.isRunning = this.keys.run.isDown;
 
             this.timeInAir += delta;
-            if (Phaser.Input.Keyboard.JustDown(this.keys.jump)) {
+            if (Phaser.Input.Keyboard.JustDown(this.keys.jump) || 
+                Phaser.Input.Keyboard.JustDown(this.keys.jumpSpace) || 
+                Phaser.Input.Keyboard.JustDown(this.keys.jumpUp)) {
                 this.scene.sound.play('jump', { volume: 0.3 });
                 this.setVelocityY(-jumpSpeed - Math.abs(this.body.velocity.x * speedJumpInfluence));
                 this.isJumping = true;
             }
         }
 
-        if (this.body.velocity.y < 0 && !this.keys.jump.isDown) {
+        if (this.body.velocity.y < 0 && !this.keys.jump.isDown && !this.keys.jumpSpace.isDown && !this.keys.jumpUp.isDown) {
             this.body.velocity.y *= 0.8;
         }
 
