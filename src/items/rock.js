@@ -8,7 +8,7 @@ export class Rock extends Projectile {
     }
 
     onHitEnemy(enemy) {
-        // só derrota se a pedra estiver a ser atirada
+        // Derrotar inimigos se estiver atirada
         if (this.state !== ProjectileState.THROWN) return;
         enemy.defeat();
         this.destroy();

@@ -32,11 +32,13 @@ export class MenuManager {
         this.keys.confirmEnter.on('down', () => { this.select() });
     }
 
+    // Subir e descer sobre as opções
     navigate(direction) {
         this.selectedIndex = (this.selectedIndex + direction + this.options.length) % this.options.length;
         this.updateMenu();
     }
 
+    // Alterar valor de opções
     change(direction) {
         const currentItem = this.options[this.selectedIndex];
         if (direction === -1 && currentItem.decrease) {
@@ -48,6 +50,7 @@ export class MenuManager {
         }
     }
 
+    // Selecionar opção
     select() {
         const currentItem = this.options[this.selectedIndex];
         if (currentItem.onSelect) {
@@ -55,6 +58,7 @@ export class MenuManager {
         }
     }
 
+    // Destacar opção selecionada
     updateMenu() {
         this.options.forEach((option, index) => {
             const isActive = (index === this.selectedIndex);

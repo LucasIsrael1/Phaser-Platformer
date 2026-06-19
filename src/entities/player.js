@@ -14,6 +14,7 @@ const jumpGravity = 50;
 const fallGravity = 150;
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
+    // Movimento
     movingSpeed = 80;
     isRunning = false;
 
@@ -22,18 +23,22 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     facingDirection = 1;
 
-    heldItem = null;
-    throwTimer = 0;
-
     platform = null;
 
+    // Carregar items
+    heldItem = null;
+    throwTimer = 0;
+    
+    // Gestão de estados
     stateName = '';
     currentState = null;
 
+    // Dano
     damageTimer = 0;
     invincibilityFrames = 0;
     knockbackDirection = 0;
-
+    
+    // Derrota/vitória
     isDefeated = false;
     hasWon = false;
 
@@ -42,14 +47,17 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         scene.physics.add.existing(this);
 
+        // Física
         this.body.setDragX(800);
         this.body.setGravityY(jumpGravity);
         this.body.setMaxVelocity(walkMaxSpeed, veritcalMaxSpeed);
         this.body.setCollideWorldBounds(true);
 
+        // Hitbox
         this.setSize(9, 15)
         this.setOffset(8, 9);
 
+        // Teclas
         this.keys = scene.input.keyboard.addKeys({
             left: Phaser.Input.Keyboard.KeyCodes.LEFT,
             right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
@@ -62,8 +70,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.setDepth(10);
 
+        // Estado inicial
         this.setState('play');
 
+        // Desconectar eventos
         scene.events.on('update', this.update, this);
         this.on('destroy', () => {
             scene.events.off('update', this.update, this);
@@ -72,20 +82,24 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     update(time, delta) {
         if (!this.body) return;
-
+        // Input do utilizador
         let inputDirection = this.keys.right.isDown - this.keys.left.isDown;
-
+        // Comportamento diferente dependente do estado
         if (this.currentState?.update) this.currentState.update(this, time, delta, inputDirection);
     }
 
+    // Entrar em um estado
     setState(name) {
         if (name == this.stateName) return;
         this.stateName = name;
+        // Sair do estado anterior
         if (this.currentState?.exit) this.currentState.exit(this);
         this.currentState = states[name];
+        // Entrar no novo estado
         if (this.currentState?.enter) this.currentState.enter(this);
     }
 
+    // Movimento horizontal
     handleMoving(inputDirection) {
         const acceleration = this.isRunning ? runAcceleration : walkAcceleration; 
         const maxSpeed = this.isRunning ? runMaxSpeed : walkMaxSpeed;
@@ -98,29 +112,35 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    // Movimento vertical
     handleJumping(delta) {
         if (this.body.blocked.down) {
             this.isJumping = false;
             this.timeInAir = 0;
         }
 
+        // Coyote timing: O jogador pode pular poucos frames após cair
         if (this.isOnGroundCoyote()) {
             this.isRunning = this.keys.run.isDown;
-
             this.timeInAir += delta;
+
+            //Pular
             if (Phaser.Input.Keyboard.JustDown(this.keys.jump) || 
                 Phaser.Input.Keyboard.JustDown(this.keys.jumpSpace) || 
-                Phaser.Input.Keyboard.JustDown(this.keys.jumpUp)) {
+                Phaser.Input.Keyboard.JustDown(this.keys.jumpUp)
+            ) {
                 this.scene.sound.play('jump', { volume: 0.3 });
                 this.setVelocityY(-jumpSpeed - Math.abs(this.body.velocity.x * speedJumpInfluence));
                 this.isJumping = true;
             }
         }
 
+        // Cair mais rápido ao soltar tecla de pular
         if (this.body.velocity.y < 0 && !this.keys.jump.isDown && !this.keys.jumpSpace.isDown && !this.keys.jumpUp.isDown) {
             this.body.velocity.y *= 0.8;
         }
 
+        // Gravidades diferentes ao subir e ao descer
         if (this.body.velocity.y > 0) {
             this.body.setGravityY(fallGravity);
         } else {
@@ -128,6 +148,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    // Arremessar item
     handleHeldItem() {
         if (Phaser.Input.Keyboard.JustDown(this.keys.item)) {
             this.heldItem.throwItem();
@@ -136,6 +157,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    // Invencibilidade após sofrer dano
     handleInvincibility(delta) {
         if (this.invincibilityFrames <= 0) {
             this.visible = true;
@@ -146,18 +168,20 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.visible = this.invincibilityFrames % 100 >= 50;
     }
 
+    // Movimentar-se junto com plataformas móveis
     handlePlatform() {
         if (!this.platform?.body) {
             this.platform = null;
             return;
         }
-
+        // Adicionar variância de posição
         this.x += this.platform.body.deltaX();
         this.y += this.platform.body.deltaY();
-
-        if (!this.body.touching.down) this.platform = null;
+        // Sair da plataforma
+        if (!this.body.touching.down || !this.platform.body.touching.up) this.platform = null;
     }
 
+    // Derrotar jogador ao cair do mapa
     checkOutOfBounds() {
         if (this.y > this.scene.terrain.height - 16) {
             this.scene.gm.hp = 0;
@@ -165,24 +189,31 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    // Coyote timing: Verificar se jogador está no chão ou acabou de cair (mas não pulou)
     isOnGroundCoyote() {
         return !this.isJumping && (this.body.blocked.down || this.timeInAir <= coyoteTime);
     }
 
+    // Sofrer dano
     damage(amount) {
+        // Previnir dano durante invencibilidade
         if (this.invincibilityFrames > 0) return;
-
+        // Reduzir vida
         this.scene.gm.hp -= amount;
+        // Derrotar jogador quando sem vida
         if (this.scene.gm.hp <= 0) {
             this.setState('defeat');
             return;
         }
+        // Sequência de estado
         this.scene.sound.play('damage', { volume: 0.7 });
         this.setState('damage');
         this.invincibilityFrames = 2000;
+        // Emição do evento
         this.scene.events.emit('update_hearts', this.scene.gm.hp);
     }
 
+    // Atualizar animações
     updateAnimations(inputDirection, delta) {
         this.setFlipX(this.facingDirection < 0);
         this.anims.timeScale = 1;
@@ -195,34 +226,42 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         let prefix = 'player';
 
+        // Sprites diferentes ao carregar item
         if (this.heldItem) prefix += '_carry'
 
+        // Jogador no ar
         if (!this.body.blocked.down) {
+            // A subir
             if (this.body.velocity.y < 0) {
                 this.anims.play(prefix + '_jump');
                 return;
             }
-
+            // A descer
             this.anims.play(prefix + '_fall');
             return;
         }
 
+        // Parado
         if (inputDirection === 0) {
             this.anims.play(prefix + '_idle');
             return;
         }
 
+        // Virar
         if (inputDirection != 0 && this.isRunning && Math.abs(this.body.velocity.x) > 20 && Math.sign(inputDirection) != Math.sign(this.body.velocity.x)) {
             this.anims.play(prefix + '_turn');
             return;
         }
 
+        // Andar (atualiza velocidade da animação de acordo com velocidade de movimento)
         this.anims.timeScale = 0.2 + Math.abs(this.body.velocity.x) * 0.02;
         this.anims.play(prefix + '_walk', true);
     }
 }
 
+// Sistema de estados
 const states = {
+    // Estado de gameplay normal
     'play': {
         update: (player, time, delta, inputDirection) => {
             player.handleJumping(delta);
@@ -234,6 +273,7 @@ const states = {
             player.checkOutOfBounds();
         }
     },
+    // Cavar itens do chão, impede movimento.
     'dig': {
         enter: (player) => {
             player.body.setVelocity(0, 0);
@@ -246,6 +286,7 @@ const states = {
             player.checkOutOfBounds();
         }
     },
+    // Receber dano. Sofre knockback e previne inputs
     'damage': {
         enter: (player) => {
             player.body.setVelocity(player.knockbackDirection * 200, -120);
@@ -265,6 +306,7 @@ const states = {
             player.body.setMaxVelocity(walkMaxSpeed, veritcalMaxSpeed);
         }
     },
+    // Sequência de derrota, impede interações com o mundo
     'defeat': {
         enter: (player) => {
             player.body.setVelocity(0, -200);
@@ -282,10 +324,12 @@ const states = {
             player.scene.gameOverMusic.play();
         },
         update: (player, time, delta, inputDirection) => {
+            // Contador para ecrã de Game Over
             player.damageTimer -= delta;
             if (player.damageTimer <= 0) player.scene.playerDie();
         }
     },
+    // Sequência de vitória
     'win': {
         enter: (player) => {
             player.body.setVelocityX(0);
@@ -299,6 +343,7 @@ const states = {
         update: (player, time, delta, inputDirection) => {
             if (player.hasWon) return;
 
+            // Caminhar até o centro da caverna 
             const distance = player.scene.cave.x - player.x;
             if (distance < -1) {
                 player.setAccelerationX(-walkAcceleration);
@@ -309,6 +354,7 @@ const states = {
                 player.setAccelerationX(walkAcceleration);
                 player.anims.timeScale = 0.2 + Math.abs(player.body.velocity.x) * 0.02;
                 player.setFlipX(false);
+            // Progredir sequência
             } else {
                 player.setAccelerationX(0);
                 player.setVelocityX(0);
@@ -321,7 +367,7 @@ const states = {
                 });
                 return;
             }
-
+            // Animações de movimento
             if (!player.body.blocked.down) {
                 player.anims.play('player_fall');
             } else {

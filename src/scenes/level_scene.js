@@ -13,6 +13,7 @@ export class LevelScene extends Phaser.Scene {
     }
 
     preload() {
+        // Carregar tilemap correspondente ao nível atual
         this.gm = this.game.registry.get('game_manager');
         this.levelKey = 'tilemap' + this.gm.level;
 
@@ -20,9 +21,9 @@ export class LevelScene extends Phaser.Scene {
     }
 
     create() {
-        // resetar game manager ao iniciar
         const gm = this.game.registry.get('game_manager');
 
+        // Restaurar vida após Game Over
         if (this.gm.hp <= 0) this.gm.hp = 3;
 
         this.terrain = new Terrain(this, 'Terrain');
@@ -33,27 +34,31 @@ export class LevelScene extends Phaser.Scene {
         this.add.existing(this.player);
         this.cameras.main.startFollow(this.player);
 
-        // tecla de pausa
+        // Tecla de pausa
         this.pauseKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
 
+        // Carregar objetos e colisões
         this.loadObjects();
         this.createOverlaps();
 
-        // música de fundo em loop
+        // Música de fundo em loop
         this.music = this.sound.add('music', { loop: true, volume: 0.7 });
         this.gameOverMusic = this.sound.add('game_over', {volume: 0.7 });
         this.levelClearMusic = this.sound.add('victory', {volume: 0.7 });
-        
+
         this.input.keyboard.once('keydown', () => {
             if (!this.music.isPlaying) this.music.play();
         });
 
+        // Carregar interface
         this.scene.launch('HUDScene');
     }
 
     loadObjects() {
+        // Obter camada de objetos do tilemap
         this.objectLayer = this.terrain.getObjectLayer();
 
+        // Criar grupos de física
         this.berries = this.physics.add.staticGroup({classType: Berry});
         this.burriedItems = this.physics.add.staticGroup({classType: BurriedItem});
 
@@ -62,29 +67,36 @@ export class LevelScene extends Phaser.Scene {
         this.projectiles = this.physics.add.group({runChildUpdate: true});
         this.rocks = this.physics.add.group({runChildUpdate: true});
         
+        // Iterar sobre objetos do tilemap
         this.objectLayer.objects.forEach(object => {
+            // Ajustar offset
             object.x += 8;
             object.y -= 8;
+            // Verificar tipo do objeto
             switch(object.type) {
+                // Fruta
                 case 'Berry':
                     this.berries.create(object.x, object.y);
                     break;
+                // Item enterrado: considerar tipo do item
                 case 'BurriedItem':
                     this.burriedItems.create(object.x, object.y + 5, object.properties[0].value);
                     break;
+                // Carangueijo
                 case 'Crab':
                     const crab = new Crab(this, object.x, object.y - 3);
                     this.enemies.add(crab);
-                    crab.setPhysics();
                     break;
+                // Tartaruga
                 case 'Turtle':
                     const turtle = new Turtle(this, object.x, object.y - 3);
                     this.enemies.add(turtle);
-                    turtle.setPhysics();
                     break;
+                // Ponto de início do nível
                 case 'SpawnPoint':
                     this.player.setPosition(object.x, object.y - 4);
                     break;
+                // Ponto de fim do nível
                 case 'Cave':
                     this.cave = this.physics.add.staticImage(object.x, object.y - 7, 'cave');
                     this.add.existing(this.cave);
@@ -92,9 +104,6 @@ export class LevelScene extends Phaser.Scene {
                     break;
             }
         });
-
-        // contar total de berries no mapa
-        this.totalBerries = this.berries.getLength();
     }
 
     createOverlaps() {
@@ -119,7 +128,7 @@ export class LevelScene extends Phaser.Scene {
 
 
     update() {
-
+        // Atualizar parallax do fundo
         const camX = this.cameras.main.scrollX;
         const camY = this.cameras.main.scrollY;
 
@@ -131,6 +140,7 @@ export class LevelScene extends Phaser.Scene {
             this.hills.tilePositionY = camY * 0.5;
         }
 
+        // Pausar jogo
         if (Phaser.Input.Keyboard.JustDown(this.pauseKey)) {
             this.music.pause();
             this.scene.pause('LevelScene');
@@ -138,16 +148,19 @@ export class LevelScene extends Phaser.Scene {
         }
     }
 
+    // Carregar cena de Game Over
     playerDie() {
         this.scene.launch('GameOverScene');
         this.scene.stop();
         return;
     }
     
+    // Carregar cena de vitória
     clearLevel() {
         this.scene.stop('HUDScene');
 
         if (this.gm.level >= this.gm.levelCount) {
+            // Cena de conclusão caso seja o último nível
             this.scene.launch('EndScene');
         } else {
             this.scene.launch('WinScene');

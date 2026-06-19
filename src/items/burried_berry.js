@@ -5,6 +5,7 @@ export class BurriedBerry extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         this.setDepth(15);
 
+        // Animação de sair do chão
         const tween = scene.tweens.add({
             targets: this,
             
@@ -14,6 +15,7 @@ export class BurriedBerry extends Phaser.Physics.Arcade.Sprite {
 
             onComplete: () => {
                 this.scene.time.delayedCall(100, () => {
+                    // Coletar fruta ao concluir a animação
                     this.scene.events.emit('update_berries', ++this.scene.gm.berries);
                     this.scene.sound.play('berry', { volume: 0.3 });
                     this.destroy();

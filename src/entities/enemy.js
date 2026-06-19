@@ -20,32 +20,31 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.setDepth(9);
     }
 
-    setPhysics() {
-        this.setVelocityX(this.moveSpeed);
-        this.setBounceX(1);
-    }
-
+    // Atacar jogador somente se inimigo estiver vivo
     handleCollision(player) {
         if (!this.isDefeated) this.attack(player);
         return false;
     }
 
+    // Definir direção do knockback e causar dano ao jogador
     attack(player) {
         player.knockbackDirection = Math.sign(player.x - this.x);
         player.damage(1);
     }
 
     update() {
+        // Impedir movimentos quando longe da câmara
         const cam = this.scene.cameras.main;        
         this.isInRange = this.x > cam.worldView.x - cameraRange && this.x < cam.worldView.right + cameraRange;
-
         if (!this.isInRange) {
             this.setVelocityX(0);
             return;
         }
 
+        // Movimento constante
         this.setVelocityX(this.direction * this.speed);
 
+        // Inverter direção
         if (this.body.blocked.left) {
             this.direction = 1;
         }
@@ -53,6 +52,7 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
             this.direction = -1;
         }
 
+        // Inverter sprite dependendo da direção
         this.setFlipX(this.direction > 0);
     }
 

@@ -5,7 +5,7 @@ export const ProjectileState = {
 }
 
 export class Projectile extends Phaser.Physics.Arcade.Sprite  {
-
+    // Estado do projétil
     state = ProjectileState.IDLE;
     holder = null;
 
@@ -16,12 +16,15 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite  {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
+        // Offset e hitbox
         this.heldOffset = heldOffset;
         this.setSize(hitbox.w, hitbox.h);
         this.setOffset(hitbox.x, hitbox.y);
 
+        // Criação de partículas
         this.createPsychicParticles();
 
+        // Desconexão de eventos
         this.on('destroy', () => {
             this.scene.events.off('update', this.update, this);
             this.psychicParticles.destroy();
@@ -31,6 +34,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite  {
     update(time, delta) {
         if (!this.body) return;
 
+        // Sistema de estados simplificado
         switch (this.state) {
             case ProjectileState.IDLE:
                 this.updateIdle(time, delta);
@@ -49,9 +53,10 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite  {
     }
 
     updateHeld(time, delta) {
+        // Seguir jogador
         const targetX = this.holder.x;
         const targetY = this.holder.y + this.heldOffset;
-
+        // Utilizar seno para a animação
         this.heldPositionX = Phaser.Math.Linear(this.x, targetX + Math.sin(time / 300) * 4, 0.15);
         this.heldPositionY = Phaser.Math.Linear(this.y, targetY + Math.sin(time / 200) * 3, 0.15);
 
@@ -62,6 +67,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite  {
         this.despawnIfOffscreen();
     }
 
+    // Apanhado pelo jogador
     pickUp(holder) {
         this.state = ProjectileState.HELD;
         this.holder = holder;
@@ -72,14 +78,17 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite  {
         this.heldPositionY = this.body.y;
     }
 
+    // Arremessar
     throwItem(direction, speedX, speedY) {
         this.state = ProjectileState.THROWN;
 
         this.body.moves = true;
+        // Redefinir posição do corpo
         this.body.reset(this.heldPositionX, this.heldPositionY);
 
         this.body.setAllowGravity(true);
 
+        // Velocidade de arremesso, de acordo com velocidade do jogador
         this.body.velocity.x = this.holder.facingDirection * 100 + this.holder.body.velocity.x * 0.75;
         this.body.velocity.y = -100 + this.holder.body.velocity.y * 0.5;
 
@@ -90,12 +99,14 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite  {
         this.holder = null;
     }
 
+    // Destruir se cair do mapa
     despawnIfOffscreen() {
         if (this.y > this.scene.terrain.height + 16) {
             this.destroy();
         }
     }
 
+    // Partículas psíquicas
     createPsychicParticles() {
         this.psychicParticles = this.scene.add.particles(0, 0, 'psychic', {
             speed: { min: 10, max: 30 },
@@ -105,9 +116,11 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite  {
             blendMode: 'ADD',
             frequency: 80
         });
+        // Partículas seguem o objeto
         this.psychicParticles.startFollow(this);
     }
 
+    // Partículas de arremesso
     spawnThrowParticles() {
         this.scene.add.particles(this.x, this.y, 'psychic', {
             speed: { min: 50, max: 80 },
@@ -117,7 +130,7 @@ export class Projectile extends Phaser.Physics.Arcade.Sprite  {
             blendMode: 'ADD',
             emitting: false
         }).explode(5);
-
+        // Parar partículas anteriores
         this.psychicParticles.stop();
     }
 

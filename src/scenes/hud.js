@@ -12,8 +12,8 @@ export class HUDScene extends Phaser.Scene {
         this.berryText = this.add.bitmapText(27, 23, 'small_font', '00');
         const gm = this.game.registry.get('game_manager');
         this.updateBerries(gm.berries);
+        
         // Corações
-
         this.hearts = [
             this.add.image(15, 14, 'heart').setOrigin(0.5, 0.5),
             this.add.image(30, 14, 'heart').setOrigin(0.5, 0.5),
@@ -34,10 +34,12 @@ export class HUDScene extends Phaser.Scene {
         });
     }
 
+    // Atualizar número de frutas exibido
     updateBerries(berries) {
         this.berryText.setText(String(berries).padStart(2, '0'));
     }
 
+    // Atualizar número de corações exibidos
     updateHearts(hearts) {
         for (let i = 0; i < this.hearts.length; i++) {
             this.hearts[i].setFrame(i < hearts ? 0 : 1);
